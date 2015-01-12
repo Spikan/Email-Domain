@@ -25,9 +25,12 @@ public class ConnectDB {
         ds.setInstanceName("data");
         ds.setDatabaseName("li_parse");
         Connection con = ds.getConnection();
+
+
+
         Statement s = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
-        ResultSet rs = s.executeQuery("select top 10000 company, ehost, total from qa_li_company_email_domains where status is null and parsed = 0 and company not like 'mondel%' and company not like 'APL%' order by total desc");
+        ResultSet rs = s.executeQuery("select top 10000 dbo.RemoveNonASCII(company) as company, ehost, total from qa_li_company_email_domains where status is null and parsed = 0 order by total desc");
         while(rs.next()) {
             String c = rs.getString("company");
             String d = rs.getString("ehost");

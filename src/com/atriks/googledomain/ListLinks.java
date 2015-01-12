@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.text.Normalizer;
+
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -68,8 +68,10 @@ public class ListLinks {
 
                 print("\nCompany: " + company + " Domain: " + domain);
 
+                String userAgent = GetUserAgent.getAgent();
+
                 //connect to URL, retrieve HTML source
-                Document doc = Jsoup.connect(url).timeout(0).get();
+                Document doc = Jsoup.connect(url).userAgent(userAgent).timeout(0).get();
 
                 //Create an object to store every link object on the page
                 //selects them by looking for <a href=""></a>
@@ -127,8 +129,10 @@ public class ListLinks {
                 url = url0 + url1;
 
 
+                String userAgent = GetUserAgent.getAgent();
+
                 //connect to URL, retrieve HTML source
-                Document doc = Jsoup.connect(url).timeout(0).get();
+                Document doc = Jsoup.connect(url).userAgent(userAgent).timeout(0).get();
 
                 //Create an object to store every link object on the page
                 //selects them by looking for <a href=""></a>
