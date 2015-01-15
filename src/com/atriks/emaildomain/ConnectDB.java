@@ -14,9 +14,6 @@ public class ConnectDB {
     ;
 
     public static ArrayList<CompDom> retrieveCD() throws SQLException{
-        Runtime runtime = Runtime.getRuntime();
-        int mb = 1024*1024;
-
         ArrayList<CompDom> cdList = new ArrayList<CompDom>();
         SQLServerDataSource ds = new SQLServerDataSource();
         ds.setUser("sa");

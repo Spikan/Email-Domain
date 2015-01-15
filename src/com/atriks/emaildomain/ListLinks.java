@@ -62,9 +62,11 @@ public class ListLinks {
                 domain = cd.getDomain();
 
                 //create url to scrape from
-                url0 = "http://en.wikipedia.org/w/index.php?search=";
-                url1 = company.replaceAll("[^\\x00-\\x7F]","");
-                url = url0 + url1;
+                //url0 = "http://en.wikipedia.org/w/index.php?search=";
+                //url1 = company.replaceAll("[^\\x00-\\x7F]","");
+                //url = url0 + url1;
+
+                url = "http://" + domain;
 
                 print("\nCompany: " + company + " Domain: " + domain);
 
@@ -124,24 +126,26 @@ public class ListLinks {
                 domains = cd.getDomains();
 
                 //create url to scrape from
-                url0 = "http://en.wikipedia.org/w/index.php?search=";
-                url1 = company.replaceAll("[^\\x00-\\x7F]","");
-                url = url0 + url1;
+                //url0 = "http://en.wikipedia.org/w/index.php?search=";
+                //url1 = company.replaceAll("[^\\x00-\\x7F]","");
+                //url = url0 + url1;
 
 
                 String userAgent = GetUserAgent.getAgent();
 
-                //connect to URL, retrieve HTML source
-                Document doc = Jsoup.connect(url).userAgent(userAgent).timeout(0).get();
-
-                //Create an object to store every link object on the page
-                //selects them by looking for <a href=""></a>
-                Elements links = doc.select("a[href]");
-
-
 
                 //Iterate through list of domains
                 for(int j = 0;j<cd.getNumDomains();j++) {
+                    url = "http://" + domains[j];
+
+                    //connect to URL, retrieve HTML source
+                    Document doc = Jsoup.connect(url).userAgent(userAgent).timeout(0).get();
+
+                    //Create an object to store every link object on the page
+                    //selects them by looking for <a href=""></a>
+                    Elements links = doc.select("a[href]");
+
+
                     print("\nCompany: " + company + " Domain: " + domains[j]);
 
                     //Create iterator to iterate through list of links
