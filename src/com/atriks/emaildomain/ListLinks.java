@@ -77,7 +77,7 @@ public class ListLinks {
 
                 //Create an object to store every link object on the page
                 //selects them by looking for <a href=""></a>
-                Elements links = doc.select("a[href]");
+                Elements links = doc.select("*");
 
                 //Create iterator to iterate through list of links
                 Iterator i$;
@@ -93,22 +93,20 @@ public class ListLinks {
                     link = (Element) i$.next();
 
                     //checks if the link text contains the word "website"
-                    if (link.text().contains("website")) {
+                    if (link.text().contains(company)) {
 
                         //creates a string to store the URL of the link
                         String wSite = link.attr("abs:href");
 
                         //checks if the stored URL matches the domain we're checking for
-                        if (wSite.contains(domain)) {
-                            print("MATCH FOUND FOR " + company + ": " + domain);
+                        print("MATCH FOUND FOR " + company + ": " + domain);
 
-                            //create queries
-                            queryList.add("update li_parse..qa_li_company_email_domains set [status] = 1, last_updated = getdate() where company like '" + company + "' and ehost like '" + domain.trim() + "'");
-                            queryList.add("update li_parse..qa_li_company_email_domains set [status] = 0, last_updated = getdate() where company like '" + company + "' and ehost not like '" + domain.trim() + "'");
-                        } else
-                            print("NO MATCH...\n ");
+                        //create queries
+                        queryList.add("update li_parse..qa_li_company_email_domains set [status] = 1, last_updated = getdate() where company like '" + company + "' and ehost like '" + domain.trim() + "'");
+                        queryList.add("update li_parse..qa_li_company_email_domains set [status] = 0, last_updated = getdate() where company like '" + company + "' and ehost not like '" + domain.trim() + "'");
+                    } else
+                        print("NO MATCH...\n ");
                     }
-                }
 
                 //sleep to not get rate limited
                 try {
@@ -143,7 +141,7 @@ public class ListLinks {
 
                     //Create an object to store every link object on the page
                     //selects them by looking for <a href=""></a>
-                    Elements links = doc.select("a[href]");
+                    Elements links = doc.select("*");
 
 
                     print("\nCompany: " + company + " Domain: " + domains[j]);
@@ -160,21 +158,14 @@ public class ListLinks {
                         //Store current link in created object
                         link = (Element) i$.next();
 
-                        //checks if the link text contains the word "website"
-                        if (link.text().contains("website")) {
+                        if (link.text().contains(company)) {
+                            print("MATCH FOUND FOR " + company + ": " + domains[j]);
 
-                            //creates a string to store the URL of the link
-                            String wSite = link.attr("abs:href");
-
-                            if (wSite.contains(domains[j])) {
-                                print("MATCH FOUND FOR " + company + ": " + domains[j]);
-
-                                //create queries
-                                queryList.add("update li_parse..qa_li_company_email_domains set [status] = 1, last_updated = getdate() where company like '" + company + "' and ehost like '" + domains[j].trim() + "'");
-                                queryList.add("update li_parse..qa_li_company_email_domains set [status] = 0, last_updated = getdate() where company like '" + company + "' and ehost not like '" + domains[j].trim() + "'");
-                            } else
-                                print("NO MATCH...\n ");
-                        }
+                            //create queries
+                            queryList.add("update li_parse..qa_li_company_email_domains set [status] = 1, last_updated = getdate() where company like '" + company + "' and ehost like '" + domains[j].trim() + "'");
+                            queryList.add("update li_parse..qa_li_company_email_domains set [status] = 0, last_updated = getdate() where company like '" + company + "' and ehost not like '" + domains[j].trim() + "'");
+                        } else
+                            print("NO MATCH...\n ");
                     }
 
                 }
