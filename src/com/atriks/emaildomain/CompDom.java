@@ -1,4 +1,4 @@
-package com.atriks.googledomain;
+package com.atriks.emaildomain;
 
 /**
  * Created by Dan Chick

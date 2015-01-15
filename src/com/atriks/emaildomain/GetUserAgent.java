@@ -1,4 +1,4 @@
-package com.atriks.googledomain;
+package com.atriks.emaildomain;
 
 import java.util.Random;
 
