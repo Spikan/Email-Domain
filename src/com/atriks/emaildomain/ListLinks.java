@@ -1,15 +1,22 @@
 package com.atriks.emaildomain;
 
 import java.io.IOException;
+import java.net.ConnectException;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 
+import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
+import org.jsoup.UnsupportedMimeTypeException;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
+import javax.net.ssl.SSLException;
+import javax.net.ssl.SSLHandshakeException;
 
 /**
  * Created by Dan Chick
@@ -43,8 +50,8 @@ public class ListLinks {
         String company;
         String domain;
         String[] domains;
-        String url0;
-        String url1;
+        //String url0;
+        //String url1;
         String url;
 
         //Iterate through list of companies and domains
@@ -67,49 +74,78 @@ public class ListLinks {
 
                 url = "http://" + domain;
 
-                print("\nCompany: " + company + " Domain: " + domain);
-
                 String userAgent = GetUserAgent.getAgent();
 
-                //connect to URL, retrieve HTML source
-                Document doc = Jsoup.connect(url).userAgent(userAgent).timeout(0).get();
-
-                //Create an object to store every link object on the page
-                //selects them by looking for <a href=""></a>
-                Elements links = doc.select("*");
-
-                //Create iterator to iterate through list of links
-                Iterator i$;
-                i$ = links.iterator();
-
-                //Create object to store single link
-                Element link;
-
-                //Iterate through list of links
-                while (i$.hasNext()) {
-
-                    //Store current link in created object
-                    link = (Element) i$.next();
-
-                    //checks if the link text contains the word "website"
-                    if (link.text().contains(company)) {
-
-
-                        //checks if the stored URL matches the domain we're checking for
-                        print("MATCH FOUND FOR " + company + ": " + domain);
-
-                        //create queries
-                        queryList.add("update li_parse..qa_li_company_email_domains set [status] = 1, last_updated = getdate() where company like '" + company + "' and ehost like '" + domain.trim() + "'");
-                        queryList.add("update li_parse..qa_li_company_email_domains set [status] = 0, last_updated = getdate() where company like '" + company + "' and ehost not like '" + domain.trim() + "'");
-                    } else
-                        print("NO MATCH...\n ");
-                }
-
-                //sleep to not get rate limited
                 try {
-                    Thread.sleep(500);
-                } catch (InterruptedException ignored) {
+                    print("\nCompany: " + company + " Domain: " + domain);
 
+                    //connect to URL, retrieve HTML source
+                    Document doc = Jsoup.connect(url).userAgent(userAgent).timeout(0).get();
+
+                    //Create an object to store every link object on the page
+                    //selects them by looking for <a href=""></a>
+                    Elements links = doc.select(":contains("+ company +")");
+
+                    if(links.size() > 0){
+
+                        boolean check = false;
+
+                        for (String aQueryList : queryList) {
+                            if (aQueryList.equals("update li_parse..qa_li_company_email_domains set [status] = 1, last_updated = getdate() where company like '" + company + "' and ehost like '" + domain.trim() + "'")) {
+                                check = true;
+                                break;
+                            }
+
+                            }
+
+                            if (!check) {
+
+                                print("MATCH FOUND FOR " + company + ": " + domain);
+                                queryList.add("update li_parse..qa_li_company_email_domains set [status] = 1, last_updated = getdate() where company like '" + company + "' and ehost like '" + domain.trim() + "'");
+                                queryList.add("update li_parse..qa_li_company_email_domains set [status] = 0, last_updated = getdate() where company like '" + company + "' and ehost not like '" + domain.trim() + "'");
+                            } else
+                                print("NO MATCH...\n ");
+                        }
+                }
+                catch(HttpStatusException e)
+                {
+                    print(e.getMessage() + " " + e.getUrl()  + " | " + e.getStatusCode());
+                }
+                catch(UnknownHostException e)
+                {
+                    print("Unknown Host: " + e.getMessage());
+                }
+                catch(ConnectException e)
+                {
+                    print(e.getMessage());
+                }
+                catch(SSLHandshakeException e)
+                {
+                    print(e.getMessage());
+                }
+                catch(SocketException e)
+                {
+                    print(e.getMessage());
+                }
+                catch(SSLException e)
+                {
+                    print(e.getMessage());
+                }
+                catch(UnsupportedMimeTypeException e)
+                {
+                    print("Cannot open page with mime type " + e.getMimeType());
+                }
+                catch(IllegalArgumentException e)
+                {
+                    print(e.getMessage());
+                }
+                catch(SocketTimeoutException e)
+                {
+                    print(e.getMessage());
+                }
+                catch(IOException e)
+                {
+                    print(e.getMessage());
                 }
 
             } else {
@@ -124,53 +160,84 @@ public class ListLinks {
                 //url1 = company.replaceAll("[^\\x00-\\x7F]","");
                 //url = url0 + url1;
 
-
                 String userAgent = GetUserAgent.getAgent();
-
 
                 //Iterate through list of domains
                 for (int j = 0; j < cd.getNumDomains(); j++) {
                     url = "http://" + domains[j];
 
-                    //connect to URL, retrieve HTML source
-                    Document doc = Jsoup.connect(url).userAgent(userAgent).timeout(0).get();
-
-                    //Create an object to store every link object on the page
-                    //selects them by looking for <a href=""></a>
-                    Elements links = doc.select("*");
+                    try {
+                        print("\nCompany: " + company + " Domain: " + domains[j]);
 
 
-                    print("\nCompany: " + company + " Domain: " + domains[j]);
+                        //connect to URL, retrieve HTML source
+                        Document doc = Jsoup.connect(url).userAgent(userAgent).timeout(0).get();
 
-                    //Create iterator to iterate through list of links
-                    Iterator i$;
-                    i$ = links.iterator();
+                        //Create an object to store every link object on the page
+                        //selects them by looking for <a href=""></a>
+                        Elements links = doc.select(":contains(" + company + ")");
 
-                    //Create object to store single link
-                    Element link;
 
-                    //Iterate through list of links
-                    while (i$.hasNext()) {
-                        //Store current link in created object
-                        link = (Element) i$.next();
+                        if(links.size() > 0){
+                            boolean check = false;
 
-                        if (link.text().contains(company)) {
-                            print("MATCH FOUND FOR " + company + ": " + domains[j]);
+                                for (String aQueryList : queryList) {
+                                    if (aQueryList.equals("update li_parse..qa_li_company_email_domains set [status] = 1, last_updated = getdate() where company like '" + company + "' and ehost like '" + domains[j].trim() + "'")) {
+                                        check = true;
+                                        break;
+                                    }
 
-                            //create queries
-                            queryList.add("update li_parse..qa_li_company_email_domains set [status] = 1, last_updated = getdate() where company like '" + company + "' and ehost like '" + domains[j].trim() + "'");
-                            queryList.add("update li_parse..qa_li_company_email_domains set [status] = 0, last_updated = getdate() where company like '" + company + "' and ehost not like '" + domains[j].trim() + "'");
-                        } else
-                            print("NO MATCH...\n ");
+                                }
+
+                                if (!check) {
+                                    print("MATCH FOUND FOR " + company + ": " + domains[j]);
+                                    queryList.add("update li_parse..qa_li_company_email_domains set [status] = 1, last_updated = getdate() where company like '" + company + "' and ehost like '" + domains[j].trim() + "'");
+                                    queryList.add("update li_parse..qa_li_company_email_domains set [status] = 0, last_updated = getdate() where company like '" + company + "' and ehost not like '" + domains[j].trim() + "'");
+                                } else
+                                    print("NO MATCH...\n ");
+                            }
+
                     }
-
-                }
-
-                //sleep to not get rate limited
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException ignored) {
-
+                    catch(HttpStatusException e)
+                    {
+                        print(e.getMessage() + " " + e.getUrl()  + " | " + e.getStatusCode());
+                    }
+                    catch(UnknownHostException e)
+                    {
+                        print("Unknown Host: " + e.getMessage());
+                    }
+                    catch(ConnectException e)
+                    {
+                        print(e.getMessage());
+                    }
+                    catch(SSLHandshakeException e)
+                    {
+                        print(e.getMessage());
+                    }
+                    catch(SocketException e)
+                    {
+                        print(e.getMessage());
+                    }
+                    catch(SSLException e)
+                    {
+                        print(e.getMessage());
+                    }
+                    catch(UnsupportedMimeTypeException e)
+                    {
+                        print("Cannot open page with mime type " + e.getMimeType());
+                    }
+                    catch(IllegalArgumentException e)
+                    {
+                        print(e.getMessage());
+                    }
+                    catch(SocketTimeoutException e)
+                    {
+                        print(e.getMessage());
+                    }
+                    catch(IOException e)
+                    {
+                        print(e.getMessage());
+                    }
                 }
             }
 
@@ -182,6 +249,7 @@ public class ListLinks {
         for (String aQueryList : queryList) {
             System.out.println("\n" + aQueryList + "\n");
         }
+
     }
 
     private static void print(String msg, Object... args) {
