@@ -48,13 +48,12 @@ public class ListLinks {
         String url;
 
         //Iterate through list of companies and domains
-        for(int i = 0;i<cdList.size();i++) {
+        for (CompDom cd : cdList) {
 
-            CompDom cd = cdList.get(i);     //get a company and domain
             boolean isArray = cd.isArray(); //check if there is more than one domain in the object
 
             //Check the object contains only 1 domain
-            if (isArray == false) {
+            if (!isArray) {
                 print("Single Domain");
 
                 //initialize variables
@@ -95,8 +94,6 @@ public class ListLinks {
                     //checks if the link text contains the word "website"
                     if (link.text().contains(company)) {
 
-                        //creates a string to store the URL of the link
-                        String wSite = link.attr("abs:href");
 
                         //checks if the stored URL matches the domain we're checking for
                         print("MATCH FOUND FOR " + company + ": " + domain);
@@ -106,17 +103,16 @@ public class ListLinks {
                         queryList.add("update li_parse..qa_li_company_email_domains set [status] = 0, last_updated = getdate() where company like '" + company + "' and ehost not like '" + domain.trim() + "'");
                     } else
                         print("NO MATCH...\n ");
-                    }
+                }
 
                 //sleep to not get rate limited
                 try {
                     Thread.sleep(500);
-                } catch (InterruptedException e) {
+                } catch (InterruptedException ignored) {
 
                 }
 
-            }
-            else {
+            } else {
                 print("Multi Domain");
 
                 //initialize variables
@@ -133,7 +129,7 @@ public class ListLinks {
 
 
                 //Iterate through list of domains
-                for(int j = 0;j<cd.getNumDomains();j++) {
+                for (int j = 0; j < cd.getNumDomains(); j++) {
                     url = "http://" + domains[j];
 
                     //connect to URL, retrieve HTML source
@@ -173,7 +169,7 @@ public class ListLinks {
                 //sleep to not get rate limited
                 try {
                     Thread.sleep(500);
-                } catch (InterruptedException e) {
+                } catch (InterruptedException ignored) {
 
                 }
             }
@@ -183,9 +179,8 @@ public class ListLinks {
 
         //print list of queries to be thrown into SQL
         print("\n\nListing matches for last run:\n");
-        for(int q = 0;q<queryList.size();q++)
-        {
-            System.out.println("\n" + queryList.get(q) + "\n");
+        for (String aQueryList : queryList) {
+            System.out.println("\n" + aQueryList + "\n");
         }
     }
 
@@ -193,7 +188,4 @@ public class ListLinks {
         System.out.println(String.format(msg, args));
     }
 
-    private static String trim(String s, int width) {
-        return s.length() > width?s.substring(0, width - 1) + ".":s;
-    }
 }
