@@ -13,8 +13,8 @@ public class GetMX {
 
         try {
             Record[] records = new Lookup(company, Type.MX).run();
-            for (int i = 0; i < records.length; i++){
-                MXRecord mx = (MXRecord) records[i];
+            for (Record record : records) {
+                MXRecord mx = (MXRecord) record;
                 print("Host " + mx.getTarget() + " has preference ", mx.getPriority());
                 r = mx.getTarget().toString();
             }
