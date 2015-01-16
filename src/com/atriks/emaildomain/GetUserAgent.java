@@ -3,7 +3,7 @@ package com.atriks.emaildomain;
 import java.util.Random;
 
 /**
- * Created by Programmer on 1/12/2015.
+ * Created by Dan Chick on 1/12/2015.
  */
 public class GetUserAgent {
 

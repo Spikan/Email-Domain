@@ -48,13 +48,12 @@ public class ListLinks {
         String url;
 
         //Iterate through list of companies and domains
-        for(int i = 0;i<cdList.size();i++) {
+        for (CompDom cd : cdList) {
 
-            CompDom cd = cdList.get(i);     //get a company and domain
             boolean isArray = cd.isArray(); //check if there is more than one domain in the object
 
             //Check the object contains only 1 domain
-            if (isArray == false) {
+            if (!isArray) {
                 print("Single Domain");
 
                 //initialize variables
@@ -63,7 +62,7 @@ public class ListLinks {
 
                 //create url to scrape from
                 url0 = "http://en.wikipedia.org/w/index.php?search=";
-                url1 = company.replaceAll("[^\\x00-\\x7F]","");
+                url1 = company.replaceAll("[^\\x00-\\x7F]", "");
                 url = url0 + url1;
 
                 print("\nCompany: " + company + " Domain: " + domain);
@@ -111,12 +110,11 @@ public class ListLinks {
                 //sleep to not get rate limited
                 try {
                     Thread.sleep(500);
-                } catch (InterruptedException e) {
+                } catch (InterruptedException ignored) {
 
                 }
 
-            }
-            else {
+            } else {
                 print("Multi Domain");
 
                 //initialize variables
@@ -125,7 +123,7 @@ public class ListLinks {
 
                 //create url to scrape from
                 url0 = "http://en.wikipedia.org/w/index.php?search=";
-                url1 = company.replaceAll("[^\\x00-\\x7F]","");
+                url1 = company.replaceAll("[^\\x00-\\x7F]", "");
                 url = url0 + url1;
 
 
@@ -139,9 +137,8 @@ public class ListLinks {
                 Elements links = doc.select("a[href]");
 
 
-
                 //Iterate through list of domains
-                for(int j = 0;j<cd.getNumDomains();j++) {
+                for (int j = 0; j < cd.getNumDomains(); j++) {
                     print("\nCompany: " + company + " Domain: " + domains[j]);
 
                     //Create iterator to iterate through list of links
@@ -178,7 +175,7 @@ public class ListLinks {
                 //sleep to not get rate limited
                 try {
                     Thread.sleep(500);
-                } catch (InterruptedException e) {
+                } catch (InterruptedException ignored) {
 
                 }
             }
@@ -188,9 +185,8 @@ public class ListLinks {
 
         //print list of queries to be thrown into SQL
         print("\n\nListing matches for last run:\n");
-        for(int q = 0;q<queryList.size();q++)
-        {
-            System.out.println("\n" + queryList.get(q) + "\n");
+        for (String aQueryList : queryList) {
+            System.out.println("\n" + aQueryList + "\n");
         }
     }
 
@@ -198,7 +194,4 @@ public class ListLinks {
         System.out.println(String.format(msg, args));
     }
 
-    private static String trim(String s, int width) {
-        return s.length() > width?s.substring(0, width - 1) + ".":s;
-    }
 }

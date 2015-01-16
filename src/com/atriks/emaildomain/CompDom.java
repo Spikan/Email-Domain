@@ -20,12 +20,6 @@ public class CompDom {
         dArray = false;
     }
 
-    public CompDom(String x, String[] y){
-        company = x;
-        domains = y;
-        dArray = true;
-    }
-
     public CompDom(String x, String[] y, int i){
         company = x;
         domains = y;
@@ -51,8 +45,7 @@ public class CompDom {
     }
 
     public boolean isArray(){
-        if (dArray) return true;
-        else return false;
+        return dArray;
     }
 
     public int getNumDomains(){
