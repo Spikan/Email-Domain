@@ -11,7 +11,7 @@ import java.util.ArrayList;
  * 2014
  */
 public class ConnectDB {
-    ;
+
 
     public static ArrayList<CompDom> retrieveCD() throws SQLException{
         ArrayList<CompDom> cdList = new ArrayList<CompDom>();
