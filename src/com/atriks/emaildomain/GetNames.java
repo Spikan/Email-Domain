@@ -24,26 +24,34 @@ public class GetNames {
 
         ResultSet rs = s.executeQuery("select first_name from parse_first_name");
 
-        String[] fn = new String[3000];
-        String[] ln = new String[3000];
-        int x = 0;
+        ArrayList<FirstName> fnList = new ArrayList<FirstName>();
+        ArrayList<LastName> lnList = new ArrayList<LastName>();
+
+        FirstName fn;
+        LastName ln;
+
 
         while(rs.next())
         {
-            fn[x] = rs.getString("first_name");
-            x++;
+            fn = new FirstName(rs.getString("first_name"));
+            fnList.add(fn);
         }
 
         ResultSet rs2 = s.executeQuery("select last_name from parse_last_name");
-        x = 0;
         while(rs2.next())
         {
-            ln[x] = rs.getString("last_name");
-            x++;
+            ln = new LastName(rs2.getString("last_name"));
+            lnList.add(ln);
         }
 
-        nameList.fName = fn;
-        nameList.lName = ln;
+        nameList.fName = fnList;
+        nameList.lName = lnList;
+
+
+        rs.close();
+        rs2.close();
+        s.close();
+        con.close();
 
         return nameList;
     }

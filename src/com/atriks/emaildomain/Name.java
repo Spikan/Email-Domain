@@ -7,20 +7,20 @@ import java.util.ArrayList;
  */
 public class Name {
 
-    String[] fName;
-    String[] lName;
+    ArrayList<FirstName> fName;
+    ArrayList<LastName> lName;
 
-    public Name(String[] fn, String[] ln){
+    public Name(ArrayList<FirstName> fn, ArrayList<LastName> ln){
         fName = fn;
         lName = ln;
     }
 
-    public String[] getfName()
+    public ArrayList<FirstName> getfName()
     {
         return fName;
     }
 
-    public String[] getlName()
+    public ArrayList<LastName> getlName()
     {
         return lName;
     }

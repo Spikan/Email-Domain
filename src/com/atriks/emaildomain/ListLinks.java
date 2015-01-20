@@ -46,6 +46,8 @@ public class ListLinks {
         //Get list of companies and domains to parse
         ArrayList<CompDom> cdList = ConnectDB.retrieveCD();
 
+        Name nameList = GetNames.retrieveNameList();
+
 
         //Create variables
         String company;
@@ -99,7 +101,7 @@ public class ListLinks {
                                     if (sParts[i].contains("@")) {
                                         sParts[i] = sParts[i].replaceAll("(@.+\\.[a-z]{3}).+", "$1");
                                         print(sParts[i]);
-                                        print(ParseFormat.getFormat(sParts[i]));
+                                        print(ParseFormat.getFormat(sParts[i], nameList));
                                     }
                                 }
                             }
@@ -196,7 +198,7 @@ public class ListLinks {
                                         if (sParts[i].contains("@")) {
                                             sParts[i] = sParts[i].replaceAll("(@.+\\.[a-z]{3}).+", "$1");
                                             print(sParts[i]);
-                                            print(ParseFormat.getFormat(sParts[i]));
+                                            print(ParseFormat.getFormat(sParts[i], nameList));
                                         }
                                     }
                                 }

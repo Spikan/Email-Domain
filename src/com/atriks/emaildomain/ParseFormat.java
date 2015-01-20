@@ -8,7 +8,7 @@ import java.util.ArrayList;
  */
 public class ParseFormat {
 
-    public static String getFormat(String emailAddress) throws SQLException
+    public static String getFormat(String emailAddress, Name nameList) throws SQLException
     {
         if(!emailAddress.contains("@"))
             return "Not a valid Email Address";
@@ -19,25 +19,26 @@ public class ParseFormat {
 
         String[] splitName2 = splitName1[0].split("\\.");
 
-        Name nameList = GetNames.retrieveNameList();
-
         Boolean firstNameFirst = true;
 
         String format = "Unknown";
 
-        String[] fName = nameList.getfName();
-        String[] lName = nameList.getlName();
+        ArrayList<FirstName> fName = nameList.getfName();
+        ArrayList<LastName> lName = nameList.getlName();
+
+        FirstName afName;
+        LastName alName;
 
         String firstNameCheck;
         String lastNameCheck;
 
-        for(int i = 0;i<fName.length;i++)
-            if (splitName2[0].equals(fName[i])) {
+        for(int i = 0;i<fName.size();i++)
+            if (splitName2[0].equals(fName.get(i))) {
                 firstNameCheck = splitName2[0];
                 firstNameFirst = true;
             }
-        for(int i = 0;i<lName.length;i++)
-            if (splitName2[0].equals(lName[i])) {
+        for(int i = 0;i<lName.size();i++)
+            if (splitName2[0].equals(lName.get(i))) {
                 lastNameCheck = splitName2[0];
                 firstNameFirst = false;
             }
