@@ -27,11 +27,11 @@ public class ConnectDB {
 
         Statement s = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
-        ResultSet rs = s.executeQuery("select top 10000 dbo.RemoveNonASCII(company) as company, ehost, total from qa_li_company_email_domains where status is null and parsed = 0 order by total desc");
+        ResultSet rs = s.executeQuery("select top 10000 dbo.RemoveNonASCII(company) as company, ehost, total from qa_li_company_email_domains where status = 1 and ehost not like '%.mil' order by total desc");
         while(rs.next()) {
             String c = rs.getString("company");
             String d = rs.getString("ehost");
-            PreparedStatement ps = con.prepareStatement("select ehost from qa_li_company_email_domains where company = '" + c.replace("'", "''") + "' and status is null");
+            PreparedStatement ps = con.prepareStatement("select ehost from qa_li_company_email_domains where company = '" + c.replace("'", "''") + "' and status = 1");
             ResultSet rs2 = ps.executeQuery();
             int i = 0;
             String[] domains = new String[3000];
@@ -39,9 +39,9 @@ public class ConnectDB {
                 domains[i] = rs2.getString("ehost");
                 i++;
             }
-            PreparedStatement ps2 = con.prepareStatement("update qa_li_company_email_domains set parsed = 1 where company = '" + c.replace("'","''") + "'");
+            //PreparedStatement ps2 = con.prepareStatement("update qa_li_company_email_domains set parsed = 1 where company = '" + c.replace("'","''") + "'");
             //ps2.execute();
-            ps2.executeUpdate();
+           // ps2.executeUpdate();
             if(domains.length == 1)
                 cdList.add(new CompDom(c.trim(), d.trim()));
             else {

@@ -7,12 +7,15 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.MissingFormatArgumentException;
 
 
 import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.UnsupportedMimeTypeException;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import javax.net.ssl.SSLException;
@@ -43,8 +46,6 @@ public class ListLinks {
         //Get list of companies and domains to parse
         ArrayList<CompDom> cdList = ConnectDB.retrieveCD();
 
-        //Create list to store newly created queries
-        ArrayList<String> queryList = new ArrayList<String>();
 
         //Create variables
         String company;
@@ -72,7 +73,8 @@ public class ListLinks {
                 //url1 = company.replaceAll("[^\\x00-\\x7F]","");
                 //url = url0 + url1;
 
-                url = "http://" + domain;
+                //url = "http://" + domain;
+                url = "https://www.google.com/search?site=&source=hp&q=" + domain + "+email";
 
                 String userAgent = GetUserAgent.getAgent();
 
@@ -80,32 +82,29 @@ public class ListLinks {
                     print("\nCompany: " + company + " Domain: " + domain);
 
                     //connect to URL, retrieve HTML source
-                    Document doc = Jsoup.connect(url).userAgent(userAgent).timeout(0).get();
+                    Document doc = Jsoup.connect(url).userAgent(userAgent).referrer("google.com").timeout(0).get();
 
                     //Create an object to store every link object on the page
                     //selects them by looking for <a href=""></a>
-                    Elements links = doc.select(":contains("+ company +")");
+                    Elements links = doc.select("[class=\"st\"]");
 
                     if(links.size() > 0){
-
-                        boolean check = false;
-
-                        for (String aQueryList : queryList) {
-                            if (aQueryList.equals("update li_parse..qa_li_company_email_domains set [status] = 1, last_updated = getdate() where company like '" + company + "' and ehost like '" + domain.trim() + "'")) {
-                                check = true;
-                                break;
+                        for(Element link:links)
+                        {
+                            String s = link.text();
+                            if(s.contains("@")) {
+                                String sParts[] = s.split("\\s+|,\\s*|\\.\\s+");
+                                for(int i = 0;i<sParts.length;i++)
+                                {
+                                    if (sParts[i].contains("@")) {
+                                        sParts[i] = sParts[i].replaceAll("(@.+\\.[a-z]{3}).+", "$1");
+                                        print(sParts[i]);
+                                    }
+                                }
                             }
-
-                            }
-
-                            if (!check) {
-
-                                print("MATCH FOUND FOR " + company + ": " + domain);
-                                queryList.add("update li_parse..qa_li_company_email_domains set [status] = 1, last_updated = getdate() where company like '" + company + "' and ehost like '" + domain.trim() + "'");
-                                queryList.add("update li_parse..qa_li_company_email_domains set [status] = 0, last_updated = getdate() where company like '" + company + "' and ehost not like '" + domain.trim() + "'");
-                            } else
-                                print("NO MATCH...\n ");
                         }
+
+                    }
                 }
                 catch(HttpStatusException e)
                 {
@@ -147,6 +146,13 @@ public class ListLinks {
                 {
                     print(e.getMessage());
                 }
+                try
+                {
+                    Thread.sleep(5000);
+                }catch (InterruptedException e)
+                {
+
+                }
 
             } else {
                 print("Multi Domain");
@@ -164,37 +170,36 @@ public class ListLinks {
 
                 //Iterate through list of domains
                 for (int j = 0; j < cd.getNumDomains(); j++) {
-                    url = "http://" + domains[j];
+                    //url = "http://" + domains[j];
+                    url = "https://www.google.com/search?site=&source=hp&q=" + domains[j] + "+email";
 
                     try {
                         print("\nCompany: " + company + " Domain: " + domains[j]);
 
 
                         //connect to URL, retrieve HTML source
-                        Document doc = Jsoup.connect(url).userAgent(userAgent).timeout(0).get();
+                        Document doc = Jsoup.connect(url).userAgent(userAgent).referrer("google.com").timeout(0).get();
 
                         //Create an object to store every link object on the page
                         //selects them by looking for <a href=""></a>
-                        Elements links = doc.select(":contains(" + company + ")");
-
+                        Elements links = doc.select("[class=\"st\"]");
 
                         if(links.size() > 0){
-                            boolean check = false;
-
-                                for (String aQueryList : queryList) {
-                                    if (aQueryList.equals("update li_parse..qa_li_company_email_domains set [status] = 1, last_updated = getdate() where company like '" + company + "' and ehost like '" + domains[j].trim() + "'")) {
-                                        check = true;
-                                        break;
+                            for(Element link:links)
+                            {
+                                String s = link.text();
+                                if(s.contains("@")) {
+                                    String sParts[] = s.split("\\s+|,\\s*|\\.\\s+");
+                                    for(int i = 0;i<sParts.length;i++)
+                                    {
+                                        if (sParts[i].contains("@")) {
+                                            sParts[i] = sParts[i].replaceAll("(@.+\\.[a-z]{3}).+", "$1");
+                                            print(sParts[i]);
+                                        }
                                     }
-
                                 }
+                            }
 
-                                if (!check) {
-                                    print("MATCH FOUND FOR " + company + ": " + domains[j]);
-                                    queryList.add("update li_parse..qa_li_company_email_domains set [status] = 1, last_updated = getdate() where company like '" + company + "' and ehost like '" + domains[j].trim() + "'");
-                                    queryList.add("update li_parse..qa_li_company_email_domains set [status] = 0, last_updated = getdate() where company like '" + company + "' and ehost not like '" + domains[j].trim() + "'");
-                                } else
-                                    print("NO MATCH...\n ");
                             }
 
                     }
@@ -238,22 +243,28 @@ public class ListLinks {
                     {
                         print(e.getMessage());
                     }
+
+                    try
+                    {
+                        Thread.sleep(5000);
+                    }catch (InterruptedException e)
+                    {
+
+                    }
                 }
             }
 
         }
 
-
-        //print list of queries to be thrown into SQL
-        print("\n\nListing matches for last run:\n");
-        for (String aQueryList : queryList) {
-            System.out.println("\n" + aQueryList + "\n");
-        }
-
     }
 
     private static void print(String msg, Object... args) {
-        System.out.println(String.format(msg, args));
+        try {
+            System.out.println(String.format(msg, args));
+        }catch (MissingFormatArgumentException e)
+        {
+
+        }
     }
 
 }
