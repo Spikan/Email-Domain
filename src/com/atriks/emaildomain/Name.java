@@ -10,9 +10,9 @@ public class Name {
     String[] fName;
     String[] lName;
 
-    public Name(String[] fName, String[] lName){
-        fName = fName;
-        lName = lName;
+    public Name(String[] fn, String[] ln){
+        fName = fn;
+        lName = ln;
     }
 
     public String[] getfName()

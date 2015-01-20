@@ -10,8 +10,8 @@ import java.util.ArrayList;
  */
 public class GetNames {
 
-    public static ArrayList<Name> retrieveNameList() throws SQLException{
-        ArrayList<Name> nameList = new ArrayList<Name>();
+    public static Name retrieveNameList() throws SQLException{
+        Name nameList = null;
         SQLServerDataSource ds = new SQLServerDataSource();
         ds.setUser("sa");
         ds.setPassword("liamcow");
@@ -42,7 +42,8 @@ public class GetNames {
             x++;
         }
 
-        nameList.add(new Name(fn,ln));
+        nameList.fName = fn;
+        nameList.lName = ln;
 
         return nameList;
     }
