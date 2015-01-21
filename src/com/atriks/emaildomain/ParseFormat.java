@@ -64,9 +64,33 @@ public class ParseFormat {
             }
 
         if(firstNameFirst)
-            format = "first.last";
+        {
+            if(middleInitial)
+            {
+                if(periodDelim)
+                    format = "{first_name}{.}{left(middle_name,1)}{.}{last_name}";
+                else if (underscoreDelim)
+                    format = "{first_name}{_}{left(middle_name,1)}{_}{last_name}";
+            }
+            else if (periodDelim)
+                format = "{first_name}{.}{last_name}";
+            else if (underscoreDelim)
+                format = "{first_name}{_}{last_name}";
+        }
         else
-            format = "last.first";
+        {
+            if(middleInitial)
+            {
+                if(periodDelim)
+                    format = "{last_name}{.}{left(middle_name,1)}{.}{first_name}";
+                else if (underscoreDelim)
+                    format = "{last_name}{_}{left(middle_name,1)}{_}{first_name}";
+            }
+            else if (periodDelim)
+                format = "{last_name}{.}{first_name}";
+            else if (underscoreDelim)
+                format = "{last_name}{_}{first_name}";
+        }
 
        return format;
     }
