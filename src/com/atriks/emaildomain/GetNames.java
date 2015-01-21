@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class GetNames {
 
     public static Name retrieveNameList() throws SQLException{
-        Name nameList = null;
+
         SQLServerDataSource ds = new SQLServerDataSource();
         ds.setUser("sa");
         ds.setPassword("liamcow");
@@ -44,9 +44,7 @@ public class GetNames {
             lnList.add(ln);
         }
 
-        nameList.fName = fnList;
-        nameList.lName = lnList;
-
+        Name nameList = new Name(fnList, lnList);
 
         rs.close();
         rs2.close();
