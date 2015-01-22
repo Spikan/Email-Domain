@@ -23,9 +23,15 @@ public class ParseFormat {
 
         String[] splitName;
 
+        if(emailAddress.length()<5)
+            return "Not a valid Email Address";
+
         String[] splitEA = emailAddress.split("@");
 
-        if( splitEA[0] == null | splitEA[0].length()<=1)
+
+        if(splitEA == null)
+            return "Not a valid Email Address";
+        else if(splitEA[0].length()<=1)
             return "Not a valid Email Address";
 
         int pCount = splitEA[0].length() - splitEA[0].replace(".", "").length();
@@ -41,7 +47,7 @@ public class ParseFormat {
         else delim = false;
 
 
-        if (pCount > 1 | uCount > 1 | dCount > 1)
+        if (pCount > 1 || uCount > 1 || dCount > 1)
             middleInitial = true;
 
 
@@ -69,7 +75,7 @@ public class ParseFormat {
 
         int len;
 
-        if(periodDelim|underscoreDelim|dashDelim)
+        if(periodDelim||underscoreDelim||dashDelim)
             delim = true;
 
 
@@ -103,7 +109,7 @@ public class ParseFormat {
 
             if (lastNameCheck.equals(lName.get(i))) {
                 firstNameFirst = false;
-                if(splitName[0].length() == lName.get(i).getlName().length() + 1)
+                if(splitName[1].length() == lName.get(i).getlName().length() + 1)
                 {
                     fInitial = true;
                 }
@@ -121,12 +127,24 @@ public class ParseFormat {
                 else if (dashDelim)
                     format = "{first_name}{-}{left(middle_name,1)}{-}{last_name}";
             }
-            else if (periodDelim)
-                format = "{first_name}{.}{last_name}";
-            else if (underscoreDelim)
-                format = "{first_name}{_}{last_name}";
-            else if (dashDelim)
-                format = "{first_name}{-}{last_name}";
+            else if (periodDelim) {
+                if(splitName[0].length()==1)
+                    format = "{left(first_name,1)}{.}{last_name}";
+                else
+                    format = "{first_name}{.}{last_name}";
+            }
+            else if (underscoreDelim) {
+                if(splitName[0].length()==1)
+                    format = "{left(first_name,1)}{_}{last_name}";
+                else
+                    format = "{first_name}{_}{last_name}";
+            }
+            else if (dashDelim) {
+                if(splitName[0].length()==1)
+                    format = "{left(first_name,1)}{-}{last_name}";
+                else
+                    format = "{first_name}{-}{last_name}";
+            }
             else if (lInitial)
                 format = "{first_name}{left(last_name,1)}";
             else
@@ -143,12 +161,24 @@ public class ParseFormat {
                 else if (dashDelim)
                     format = "{last_name}{-}{left(middle_name,1)}{-}{first_name}";
             }
-            else if (periodDelim)
-                format = "{last_name}{.}{first_name}";
-            else if (underscoreDelim)
-                format = "{last_name}{_}{first_name}";
-            else if (dashDelim)
-                format = "{last_name}{-}{first_name}";
+            else if (periodDelim) {
+                if(splitName[1].length()==1)
+                    format = "{first_name}{.}{left(last_name,1)}";
+                else
+                    format = "{last_name}{.}{first_name}";
+            }
+            else if (underscoreDelim) {
+                if(splitName[1].length()==1)
+                    format = "{first_name}{_}{left(last_name,1)}";
+                else
+                    format = "{last_name}{_}{first_name}";
+            }
+            else if (dashDelim) {
+                if(splitName[1].length()==1)
+                    format = "{first_name}{-}{left(last_name,1)}";
+                else
+                    format = "{last_name}{-}{first_name}";
+            }
             else if (fInitial)
                 format = "{left(first_name,1)}{last_name}";
             else
