@@ -56,6 +56,7 @@ public class ListLinks {
         //String url0;
         //String url1;
         String url;
+        ArrayList<CompanyFormat> formatList = new ArrayList<CompanyFormat>();
 
         //Iterate through list of companies and domains
         for (CompDom cd : cdList) {
@@ -101,7 +102,10 @@ public class ListLinks {
                                     if (sParts[i].contains("@")) {
                                         sParts[i] = sParts[i].replaceAll("(@.+\\.[a-z]{3}).+", "$1");
                                         print(sParts[i]);
-                                        print(ParseFormat.getFormat(sParts[i], nameList));
+                                        String format = ParseFormat.getFormat(sParts[i], nameList);
+                                        CompanyFormat cf = new CompanyFormat(company, format);
+                                        formatList.add(cf);
+                                        print(format);
                                     }
                                 }
                             }
@@ -198,7 +202,10 @@ public class ListLinks {
                                         if (sParts[i].contains("@")) {
                                             sParts[i] = sParts[i].replaceAll("(@.+\\.[a-z]{3}).+", "$1");
                                             print(sParts[i]);
-                                            print(ParseFormat.getFormat(sParts[i], nameList));
+                                            String format = ParseFormat.getFormat(sParts[i], nameList);
+                                            CompanyFormat cf = new CompanyFormat(company, format);
+                                            formatList.add(cf);
+                                            print(format);
                                         }
                                     }
                                 }
@@ -259,7 +266,19 @@ public class ListLinks {
             }
 
         }
-
+        for(int i = 0;i<formatList.size();i++)
+        {
+            String cCheck = formatList.get(i).getCompany();
+            if(i>0) {
+                if (cCheck.equals(formatList.get(i - 1).getCompany())) {
+                    print(formatList.get(i).getFormat());
+                }
+                else
+                    print("Listing retrieved formats for " + formatList.get(i).getCompany() + ":\n");
+            }
+            else
+            print("Listing retrieved formats for " + formatList.get(i).getCompany() + ":\n");
+        }
     }
 
     private static void print(String msg, Object... args) {
