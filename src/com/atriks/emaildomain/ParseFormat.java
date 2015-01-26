@@ -67,9 +67,6 @@ public class ParseFormat {
         ArrayList<FirstName> fName = nameList.getfName();
         ArrayList<LastName> lName = nameList.getlName();
 
-        FirstName afName;
-        LastName alName;
-
         String firstNameCheck;
         String lastNameCheck;
 
@@ -79,38 +76,36 @@ public class ParseFormat {
             delim = true;
 
 
-        for(int i = 0;i<fName.size();i++) {
+        for (FirstName aFName : fName) {
 
-            len = fName.get(i).getfName().length();
+            len = aFName.getfName().length();
 
-            if(splitName[0].length()>=len+1 && !delim)
-                firstNameCheck = splitName[0].substring(0,len);
+            if (splitName[0].length() >= len + 1 && !delim)
+                firstNameCheck = splitName[0].substring(0, len);
             else
                 firstNameCheck = splitName[0];
 
-            if (firstNameCheck.equals(fName.get(i))) {
+            if (firstNameCheck.equals(aFName.getfName())) {
                 firstNameFirst = true;
 
 
-                if(splitName[0].length() == fName.get(i).getfName().length() + 1)
-                {
+                if (splitName[0].length() == (aFName.getfName().length() + 1)) {
                     lInitial = true;
                 }
             }
         }
-        for(int i = 0;i<lName.size();i++) {
+        for (LastName aLName : lName) {
 
-            len = lName.get(i).getlName().length();
+            len = aLName.getlName().length();
 
-            if(splitName[0].length()>=len+1 && !delim)
-                lastNameCheck = splitName[0].substring(splitName[0].length()-(len + 1), splitName[0].length());
+            if (splitName[0].length() >= len + 1 && !delim)
+                lastNameCheck = splitName[0].substring(splitName[0].length() - (len + 1), splitName[0].length());
             else
                 lastNameCheck = splitName[0];
 
-            if (lastNameCheck.equals(lName.get(i))) {
+            if (lastNameCheck.equals(aLName.getlName())) {
                 firstNameFirst = false;
-                if(splitName[1].length() == lName.get(i).getlName().length() + 1)
-                {
+                if (splitName[1].length() == (aLName.getlName().length() + 1)) {
                     fInitial = true;
                 }
             }

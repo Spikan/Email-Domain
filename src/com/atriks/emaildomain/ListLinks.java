@@ -7,7 +7,6 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.MissingFormatArgumentException;
 
 
@@ -77,7 +76,7 @@ public class ListLinks {
                 //url = url0 + url1;
 
                 //url = "http://" + domain;
-                url = "https://www.google.com/search?site=&source=hp&q=" + domain + "+email";
+                url = "https://www.email-format.com/d/" + domain;
 
                 String userAgent = GetUserAgent.getAgent();
 
@@ -85,11 +84,11 @@ public class ListLinks {
                     print("\nCompany: " + company + " Domain: " + domain);
 
                     //connect to URL, retrieve HTML source
-                    Document doc = Jsoup.connect(url).userAgent(userAgent).referrer("google.com").timeout(0).get();
+                    Document doc = Jsoup.connect(url).userAgent(userAgent).referrer("https://www.email-format.com").timeout(0).get();
 
                     //Create an object to store every link object on the page
                     //selects them by looking for <a href=""></a>
-                    Elements links = doc.select("[class=\"st\"]");
+                    Elements links = doc.select("[class=\"format fl\"]");
 
                     if(links.size() > 0){
                         for(Element link:links)
