@@ -45,8 +45,6 @@ public class ListLinks {
         //Get list of companies and domains to parse
         ArrayList<CompDom> cdList = ConnectDB.retrieveCD();
 
-        Name nameList = GetNames.retrieveNameList();
-
 
         //Create variables
         String company;
@@ -56,6 +54,7 @@ public class ListLinks {
         //String url1;
         String url;
         ArrayList<CompanyFormat> formatList = new ArrayList<CompanyFormat>();
+        int count = 0;
 
         //Iterate through list of companies and domains
         for (CompDom cd : cdList) {
@@ -83,34 +82,25 @@ public class ListLinks {
                 try {
                     print("\nCompany: " + company + " Domain: " + domain);
 
+                    System.setProperty("javax.net.ssl.trustStore", "email-format.jks");
+
                     //connect to URL, retrieve HTML source
-                    Document doc = Jsoup.connect(url).userAgent(userAgent).referrer("https://www.email-format.com").timeout(0).get();
+                    Document doc = Jsoup.connect(url).userAgent(userAgent).referrer("https://www.email-format.com/i/search_result/?q=" + domain).timeout(0).get();
 
                     //Create an object to store every link object on the page
                     //selects them by looking for <a href=""></a>
-                    Elements links = doc.select("[class=\"format fl\"]");
+                    Elements formats = doc.select("[class=\"format fl\"]");
 
-                    if(links.size() > 0){
-                        for(Element link:links)
-                        {
-                            String s = link.text();
-                            if(s.contains("@")) {
-                                String sParts[] = s.split("\\s+|,\\s*|\\.\\s+");
-                                for(int i = 0;i<sParts.length;i++)
-                                {
-                                    if (sParts[i].contains("@")) {
-                                        sParts[i] = sParts[i].replaceAll("(@.+\\.[a-z]{3}).+", "$1");
-                                        print(sParts[i]);
-                                        String format = ParseFormat.getFormat(sParts[i], nameList);
-                                        CompanyFormat cf = new CompanyFormat(company, format);
-                                        formatList.add(cf);
-                                        print(format);
-                                    }
-                                }
-                            }
+                    if(formats.size() > 0){
+                        for(Element link:formats) {
+                            String form = link.text();
+                            CompanyFormat cf = new CompanyFormat(company, form);
+                            formatList.add(cf);
+                            print(form);
                         }
-
                     }
+                    count++;
+                    print("number of queries : " + count);
                 }
                 catch(HttpStatusException e)
                 {
@@ -154,7 +144,7 @@ public class ListLinks {
                 }
                 try
                 {
-                    Thread.sleep(5000);
+                    Thread.sleep(6000);
                 }catch (InterruptedException e)
                 {
 
@@ -177,41 +167,30 @@ public class ListLinks {
                 //Iterate through list of domains
                 for (int j = 0; j < cd.getNumDomains(); j++) {
                     //url = "http://" + domains[j];
-                    url = "https://www.google.com/search?site=&source=hp&q=" + domains[j] + "+email";
+                    url = "https://www.email-format.com/d/" + domains[j];
 
                     try {
                         print("\nCompany: " + company + " Domain: " + domains[j]);
 
+                        System.setProperty("javax.net.ssl.trustStore", "email-format.jks");
 
                         //connect to URL, retrieve HTML source
-                        Document doc = Jsoup.connect(url).userAgent(userAgent).referrer("google.com").timeout(0).get();
+                        Document doc = Jsoup.connect(url).userAgent(userAgent).referrer("https://www.email-format.com/i/search_result/?q=" + domains[j]).timeout(0).get();
 
                         //Create an object to store every link object on the page
                         //selects them by looking for <a href=""></a>
-                        Elements links = doc.select("[class=\"st\"]");
+                        Elements formats = doc.select("[class=\"format fl\"]");
 
-                        if(links.size() > 0){
-                            for(Element link:links)
-                            {
-                                String s = link.text();
-                                if(s.contains("@")) {
-                                    String sParts[] = s.split("\\s+|,\\s*|\\.\\s+");
-                                    for(int i = 0;i<sParts.length;i++)
-                                    {
-                                        if (sParts[i].contains("@")) {
-                                            sParts[i] = sParts[i].replaceAll("(@.+\\.[a-z]{3}).+", "$1");
-                                            print(sParts[i]);
-                                            String format = ParseFormat.getFormat(sParts[i], nameList);
-                                            CompanyFormat cf = new CompanyFormat(company, format);
-                                            formatList.add(cf);
-                                            print(format);
-                                        }
-                                    }
-                                }
+                        if(formats.size() > 0){
+                            for(Element link:formats) {
+                                String form = link.text();
+                                CompanyFormat cf = new CompanyFormat(company, form);
+                                formatList.add(cf);
+                                print(form);
                             }
-
-                            }
-
+                        }
+                        count++;
+                        print("number of queries : " + count);
                     }
                     catch(HttpStatusException e)
                     {
@@ -256,7 +235,7 @@ public class ListLinks {
 
                     try
                     {
-                        Thread.sleep(5000);
+                        Thread.sleep(6000);
                     }catch (InterruptedException e)
                     {
 
@@ -278,6 +257,7 @@ public class ListLinks {
             else
             print("Listing retrieved formats for " + formatList.get(i).getCompany() + ":\n");
         }
+        print("number of queries : " + count);
     }
 
     private static void print(String msg, Object... args) {
