@@ -9,27 +9,25 @@ public class CompanyFormat {
     public String format;
     public String[] formats;
 
-    public CompanyFormat(String c, String f)
-    {
+    public CompanyFormat(String c, String f) {
         company = c;
         format = f;
     }
 
-    public CompanyFormat(String c, String[] f)
-    {
+    public CompanyFormat(String c, String[] f) {
         company = c;
         formats = f;
     }
 
-    public String getCompany(){
+    public String getCompany() {
         return company;
     }
 
-    public String getFormat(){
+    public String getFormat() {
         return format;
     }
 
-    public String[] getFormats(){
+    public String[] getFormats() {
         return formats;
     }
 

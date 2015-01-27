@@ -10,7 +10,7 @@ import java.util.ArrayList;
  */
 public class GetNames {
 
-    public static Name retrieveNameList() throws SQLException{
+    public static Name retrieveNameList() throws SQLException {
 
         SQLServerDataSource ds = new SQLServerDataSource();
         ds.setUser("sa");
@@ -31,15 +31,13 @@ public class GetNames {
         LastName ln;
 
 
-        while(rs.next())
-        {
+        while (rs.next()) {
             fn = new FirstName(rs.getString("first_name"));
             fnList.add(fn);
         }
 
         ResultSet rs2 = s.executeQuery("select last_name from parse_last_name");
-        while(rs2.next())
-        {
+        while (rs2.next()) {
             ln = new LastName(rs2.getString("last_name"));
             lnList.add(ln);
         }

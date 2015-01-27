@@ -24,6 +24,7 @@ public class GetMX {
         }
         return r;
     }
+
     private static void print(String msg, Object... args) {
         System.out.println(String.format(msg, args));
     }

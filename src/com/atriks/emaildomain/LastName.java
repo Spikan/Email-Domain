@@ -6,13 +6,11 @@ package com.atriks.emaildomain;
 public class LastName {
     String lName;
 
-    public LastName(String l)
-    {
+    public LastName(String l) {
         lName = l;
     }
 
-    public String getlName()
-    {
+    public String getlName() {
         return lName;
     }
 }

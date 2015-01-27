@@ -8,9 +8,8 @@ import java.util.ArrayList;
  */
 public class ParseFormat {
 
-    public static String getFormat(String emailAddress, Name nameList) throws SQLException
-    {
-        if(!emailAddress.contains("@"))
+    public static String getFormat(String emailAddress, Name nameList) throws SQLException {
+        if (!emailAddress.contains("@"))
             return "Not a valid Email Address";
 
         boolean middleInitial = false;
@@ -23,22 +22,22 @@ public class ParseFormat {
 
         String[] splitName;
 
-        if(emailAddress.length()<5)
+        if (emailAddress.length() < 5)
             return "Not a valid Email Address";
 
         String[] splitEA = emailAddress.split("@");
 
 
-        if(splitEA == null)
+        if (splitEA == null)
             return "Not a valid Email Address";
-        else if(splitEA[0].length()<=1)
+        else if (splitEA[0].length() <= 1)
             return "Not a valid Email Address";
 
         int pCount = splitEA[0].length() - splitEA[0].replace(".", "").length();
         int uCount = splitEA[0].length() - splitEA[0].replace("_", "").length();
         int dCount = splitEA[0].length() - splitEA[0].replace("-", "").length();
 
-        if(pCount > 0)
+        if (pCount > 0)
             periodDelim = true;
         else if (uCount > 0)
             underscoreDelim = true;
@@ -51,7 +50,7 @@ public class ParseFormat {
             middleInitial = true;
 
 
-        if(periodDelim)
+        if (periodDelim)
             splitName = splitEA[0].split("\\.");
         else if (underscoreDelim)
             splitName = splitEA[0].split("_");
@@ -72,7 +71,7 @@ public class ParseFormat {
 
         int len;
 
-        if(periodDelim||underscoreDelim||dashDelim)
+        if (periodDelim || underscoreDelim || dashDelim)
             delim = true;
 
 
@@ -111,75 +110,62 @@ public class ParseFormat {
             }
         }
 
-        if(firstNameFirst)
-        {
-            if(middleInitial)
-            {
-                if(periodDelim)
+        if (firstNameFirst) {
+            if (middleInitial) {
+                if (periodDelim)
                     format = "{first_name}{.}{left(middle_name,1)}{.}{last_name}";
                 else if (underscoreDelim)
                     format = "{first_name}{_}{left(middle_name,1)}{_}{last_name}";
                 else if (dashDelim)
                     format = "{first_name}{-}{left(middle_name,1)}{-}{last_name}";
-            }
-            else if (periodDelim) {
-                if(splitName[0].length()==1)
+            } else if (periodDelim) {
+                if (splitName[0].length() == 1)
                     format = "{left(first_name,1)}{.}{last_name}";
                 else
                     format = "{first_name}{.}{last_name}";
-            }
-            else if (underscoreDelim) {
-                if(splitName[0].length()==1)
+            } else if (underscoreDelim) {
+                if (splitName[0].length() == 1)
                     format = "{left(first_name,1)}{_}{last_name}";
                 else
                     format = "{first_name}{_}{last_name}";
-            }
-            else if (dashDelim) {
-                if(splitName[0].length()==1)
+            } else if (dashDelim) {
+                if (splitName[0].length() == 1)
                     format = "{left(first_name,1)}{-}{last_name}";
                 else
                     format = "{first_name}{-}{last_name}";
-            }
-            else if (lInitial)
+            } else if (lInitial)
                 format = "{first_name}{left(last_name,1)}";
             else
                 format = "{first_name}{last_name}";
-        }
-        else
-        {
-            if(middleInitial)
-            {
-                if(periodDelim)
+        } else {
+            if (middleInitial) {
+                if (periodDelim)
                     format = "{last_name}{.}{left(middle_name,1)}{.}{first_name}";
                 else if (underscoreDelim)
                     format = "{last_name}{_}{left(middle_name,1)}{_}{first_name}";
                 else if (dashDelim)
                     format = "{last_name}{-}{left(middle_name,1)}{-}{first_name}";
-            }
-            else if (periodDelim) {
-                if(splitName[1].length()==1)
+            } else if (periodDelim) {
+                if (splitName[1].length() == 1)
                     format = "{first_name}{.}{left(last_name,1)}";
                 else
                     format = "{last_name}{.}{first_name}";
-            }
-            else if (underscoreDelim) {
-                if(splitName[1].length()==1)
+            } else if (underscoreDelim) {
+                if (splitName[1].length() == 1)
                     format = "{first_name}{_}{left(last_name,1)}";
                 else
                     format = "{last_name}{_}{first_name}";
-            }
-            else if (dashDelim) {
-                if(splitName[1].length()==1)
+            } else if (dashDelim) {
+                if (splitName[1].length() == 1)
                     format = "{first_name}{-}{left(last_name,1)}";
                 else
                     format = "{last_name}{-}{first_name}";
-            }
-            else if (fInitial)
+            } else if (fInitial)
                 format = "{left(first_name,1)}{last_name}";
             else
                 format = "{last_name}{last_name}";
         }
 
-       return format;
+        return format;
     }
 }

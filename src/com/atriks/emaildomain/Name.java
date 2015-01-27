@@ -10,18 +10,16 @@ public class Name {
     ArrayList<FirstName> fName;
     ArrayList<LastName> lName;
 
-    public Name(ArrayList<FirstName> fn, ArrayList<LastName> ln){
+    public Name(ArrayList<FirstName> fn, ArrayList<LastName> ln) {
         fName = fn;
         lName = ln;
     }
 
-    public ArrayList<FirstName> getfName()
-    {
+    public ArrayList<FirstName> getfName() {
         return fName;
     }
 
-    public ArrayList<LastName> getlName()
-    {
+    public ArrayList<LastName> getlName() {
         return lName;
     }
 }

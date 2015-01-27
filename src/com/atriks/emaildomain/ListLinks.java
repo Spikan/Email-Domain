@@ -30,7 +30,7 @@ import javax.net.ssl.SSLHandshakeException;
  * A program that will take a list of companies and domains
  * and check to see if the official website of that company
  * is the listed domain by scraping Wikipedia
- *
+ * <p/>
  * Input: List of companies and domains in a custom CompDom object
  * Output: List of queries to use in SQL Server
  */
@@ -69,12 +69,6 @@ public class ListLinks {
                 company = cd.getCompany();
                 domain = cd.getDomain();
 
-                //create url to scrape from
-                //url0 = "http://en.wikipedia.org/w/index.php?search=";
-                //url1 = company.replaceAll("[^\\x00-\\x7F]","");
-                //url = url0 + url1;
-
-                //url = "http://" + domain;
                 url = "https://www.email-format.com/d/" + domain;
 
                 String userAgent = GetUserAgent.getAgent();
@@ -91,8 +85,8 @@ public class ListLinks {
                     //selects them by looking for <a href=""></a>
                     Elements formats = doc.select("[class=\"format fl\"]");
 
-                    if(formats.size() > 0){
-                        for(Element link:formats) {
+                    if (formats.size() > 0) {
+                        for (Element link : formats) {
                             String form = link.text();
                             CompanyFormat cf = new CompanyFormat(company, form);
                             formatList.add(cf);
@@ -101,52 +95,30 @@ public class ListLinks {
                     }
                     count++;
                     print("number of queries : " + count);
-                }
-                catch(HttpStatusException e)
-                {
-                    print(e.getMessage() + " " + e.getUrl()  + " | " + e.getStatusCode());
-                }
-                catch(UnknownHostException e)
-                {
+                } catch (HttpStatusException e) {
+                    print(e.getMessage() + " " + e.getUrl() + " | " + e.getStatusCode());
+                } catch (UnknownHostException e) {
                     print("Unknown Host: " + e.getMessage());
-                }
-                catch(ConnectException e)
-                {
+                } catch (ConnectException e) {
                     print(e.getMessage());
-                }
-                catch(SSLHandshakeException e)
-                {
+                } catch (SSLHandshakeException e) {
                     print(e.getMessage());
-                }
-                catch(SocketException e)
-                {
+                } catch (SocketException e) {
                     print(e.getMessage());
-                }
-                catch(SSLException e)
-                {
+                } catch (SSLException e) {
                     print(e.getMessage());
-                }
-                catch(UnsupportedMimeTypeException e)
-                {
+                } catch (UnsupportedMimeTypeException e) {
                     print("Cannot open page with mime type " + e.getMimeType());
-                }
-                catch(IllegalArgumentException e)
-                {
+                } catch (IllegalArgumentException e) {
+                    print(e.getMessage());
+                } catch (SocketTimeoutException e) {
+                    print(e.getMessage());
+                } catch (IOException e) {
                     print(e.getMessage());
                 }
-                catch(SocketTimeoutException e)
-                {
-                    print(e.getMessage());
-                }
-                catch(IOException e)
-                {
-                    print(e.getMessage());
-                }
-                try
-                {
-                    Thread.sleep(6000);
-                }catch (InterruptedException e)
-                {
+                try {
+                    Thread.sleep(20000);
+                } catch (InterruptedException e) {
 
                 }
 
@@ -157,16 +129,10 @@ public class ListLinks {
                 company = cd.getCompany();
                 domains = cd.getDomains();
 
-                //create url to scrape from
-                //url0 = "http://en.wikipedia.org/w/index.php?search=";
-                //url1 = company.replaceAll("[^\\x00-\\x7F]","");
-                //url = url0 + url1;
-
                 String userAgent = GetUserAgent.getAgent();
 
                 //Iterate through list of domains
                 for (int j = 0; j < cd.getNumDomains(); j++) {
-                    //url = "http://" + domains[j];
                     url = "https://www.email-format.com/d/" + domains[j];
 
                     try {
@@ -181,8 +147,8 @@ public class ListLinks {
                         //selects them by looking for <a href=""></a>
                         Elements formats = doc.select("[class=\"format fl\"]");
 
-                        if(formats.size() > 0){
-                            for(Element link:formats) {
+                        if (formats.size() > 0) {
+                            for (Element link : formats) {
                                 String form = link.text();
                                 CompanyFormat cf = new CompanyFormat(company, form);
                                 formatList.add(cf);
@@ -191,71 +157,46 @@ public class ListLinks {
                         }
                         count++;
                         print("number of queries : " + count);
-                    }
-                    catch(HttpStatusException e)
-                    {
-                        print(e.getMessage() + " " + e.getUrl()  + " | " + e.getStatusCode());
-                    }
-                    catch(UnknownHostException e)
-                    {
+                    } catch (HttpStatusException e) {
+                        print(e.getMessage() + " " + e.getUrl() + " | " + e.getStatusCode());
+                    } catch (UnknownHostException e) {
                         print("Unknown Host: " + e.getMessage());
-                    }
-                    catch(ConnectException e)
-                    {
+                    } catch (ConnectException e) {
                         print(e.getMessage());
-                    }
-                    catch(SSLHandshakeException e)
-                    {
+                    } catch (SSLHandshakeException e) {
                         print(e.getMessage());
-                    }
-                    catch(SocketException e)
-                    {
+                    } catch (SocketException e) {
                         print(e.getMessage());
-                    }
-                    catch(SSLException e)
-                    {
+                    } catch (SSLException e) {
                         print(e.getMessage());
-                    }
-                    catch(UnsupportedMimeTypeException e)
-                    {
+                    } catch (UnsupportedMimeTypeException e) {
                         print("Cannot open page with mime type " + e.getMimeType());
-                    }
-                    catch(IllegalArgumentException e)
-                    {
+                    } catch (IllegalArgumentException e) {
                         print(e.getMessage());
-                    }
-                    catch(SocketTimeoutException e)
-                    {
+                    } catch (SocketTimeoutException e) {
                         print(e.getMessage());
-                    }
-                    catch(IOException e)
-                    {
+                    } catch (IOException e) {
                         print(e.getMessage());
                     }
 
-                    try
-                    {
-                        Thread.sleep(6000);
-                    }catch (InterruptedException e)
-                    {
+                    try {
+                        Thread.sleep(20000);
+                    } catch (InterruptedException e) {
 
                     }
                 }
             }
 
         }
-        for(int i = 0;i<formatList.size();i++)
-        {
+        for (int i = 0; i < formatList.size(); i++) {
             String cCheck = formatList.get(i).getCompany();
-            if(i>0) {
+            if (i > 0) {
                 if (cCheck.equals(formatList.get(i - 1).getCompany())) {
                     print(formatList.get(i).getFormat());
-                }
-                else
+                } else
                     print("Listing retrieved formats for " + formatList.get(i).getCompany() + ":\n");
-            }
-            else
-            print("Listing retrieved formats for " + formatList.get(i).getCompany() + ":\n");
+            } else
+                print("Listing retrieved formats for " + formatList.get(i).getCompany() + ":\n");
         }
         print("number of queries : " + count);
     }
@@ -263,8 +204,7 @@ public class ListLinks {
     private static void print(String msg, Object... args) {
         try {
             System.out.println(String.format(msg, args));
-        }catch (MissingFormatArgumentException e)
-        {
+        } catch (MissingFormatArgumentException e) {
 
         }
     }

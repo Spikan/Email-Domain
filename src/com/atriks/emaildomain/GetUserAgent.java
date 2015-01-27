@@ -7,13 +7,11 @@ import java.util.Random;
  */
 public class GetUserAgent {
 
-    public static String getAgent()
-    {
+    public static String getAgent() {
         Random rand = new Random();
         int randomNum = rand.nextInt(5) + 1;
 
-        switch(randomNum)
-        {
+        switch (randomNum) {
             case 1:
                 return "Mozilla/5.0 (Windows NT 6.3; rv:36.0) Gecko/20100101 Firefox/36.0";
             case 2:

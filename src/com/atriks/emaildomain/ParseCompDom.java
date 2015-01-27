@@ -11,8 +11,7 @@ import java.util.StringTokenizer;
 public class ParseCompDom {
 
 
-
-    public static ArrayList parse() throws IOException{
+    public static ArrayList parse() throws IOException {
         ArrayList<CompDom> list = new ArrayList<CompDom>();
 
 
@@ -21,10 +20,10 @@ public class ParseCompDom {
         Scanner scanner = new Scanner(path);
 
         scanner.useDelimiter(System.getProperty("line.separator"));
-        while(scanner.hasNext()){
+        while (scanner.hasNext()) {
             String line = scanner.next();
             StringTokenizer st = new StringTokenizer(line);
-            if(st.countTokens() == 2){
+            if (st.countTokens() == 2) {
                 String company = st.nextToken();
                 String domain = st.nextToken();
                 CompDom cd = new CompDom(company, domain);

@@ -6,13 +6,11 @@ package com.atriks.emaildomain;
 public class FirstName {
     String fName;
 
-            public FirstName(String f)
-            {
-                fName = f;
-            }
+    public FirstName(String f) {
+        fName = f;
+    }
 
-    public String getfName()
-    {
+    public String getfName() {
         return fName;
     }
 }
