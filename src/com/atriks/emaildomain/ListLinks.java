@@ -26,14 +26,6 @@ import javax.net.ssl.SSLHandshakeException;
  * 2014
  */
 
-/**
- * A program that will take a list of companies and domains
- * and check to see if the official website of that company
- * is the listed domain by scraping Wikipedia
- * <p/>
- * Input: List of companies and domains in a custom CompDom object
- * Output: List of queries to use in SQL Server
- */
 public class ListLinks {
 
 
@@ -50,8 +42,6 @@ public class ListLinks {
         String company;
         String domain;
         String[] domains;
-        //String url0;
-        //String url1;
         String url;
         ArrayList<CompanyFormat> formatList = new ArrayList<CompanyFormat>();
         int count = 0;
@@ -81,8 +71,7 @@ public class ListLinks {
                     //connect to URL, retrieve HTML source
                     Document doc = Jsoup.connect(url).userAgent(userAgent).referrer("https://www.email-format.com/i/search_result/?q=" + domain).timeout(0).get();
 
-                    //Create an object to store every link object on the page
-                    //selects them by looking for <a href=""></a>
+                    //Create an object to store objects on the page
                     Elements formats = doc.select("[class=\"format fl\"]");
 
                     if (formats.size() > 0) {
@@ -143,8 +132,7 @@ public class ListLinks {
                         //connect to URL, retrieve HTML source
                         Document doc = Jsoup.connect(url).userAgent(userAgent).referrer("https://www.email-format.com/i/search_result/?q=" + domains[j]).timeout(0).get();
 
-                        //Create an object to store every link object on the page
-                        //selects them by looking for <a href=""></a>
+                        //Create an object to store objects on the page
                         Elements formats = doc.select("[class=\"format fl\"]");
 
                         if (formats.size() > 0) {
