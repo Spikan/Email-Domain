@@ -29,8 +29,6 @@ public class ConnectDBDispatch {
         ResultSet rs = ps.executeQuery();
 
         int i = 0;
-        String company = rs.getString("company");
-        String domain  = rs.getString("ehost");
         String[] companies = new String[3000];
         String[] domains = new String[3000];
 
@@ -38,13 +36,11 @@ public class ConnectDBDispatch {
         {
             companies[i] = rs.getString("company");
             domains[i] = rs.getString("ehost");
+            cdList.add(new CompDom(companies[i].trim(), domains[i].trim()));
             i++;
         }
 
-        if (domains.length == 1)
-            cdList.add(new CompDom(company.trim(), domain.trim()));
-        else if (domains.length != 0)
-        {}
+
 
         return cdList;
     }
