@@ -34,9 +34,17 @@ public class ListLinks {
 
     public static void main(String[] args) throws IOException, SQLException {
 
-        //Get list of companies and domains to parse
-        ArrayList<CompDom> cdList = ConnectDB.retrieveCD();
+        ArrayList<CompDom> cdList = new ArrayList<CompDom>();
 
+        for(String s: args)
+        {
+            if(!s.equals(null))
+            {
+                cdList = ConnectDBDispatch.retrieveCDDispatch(s);
+            }
+            else
+                print("Session ID required. Exiting.");
+        }
 
         //Create variables
         String company;
@@ -52,67 +60,6 @@ public class ListLinks {
             boolean isArray = cd.isArray(); //check if there is more than one domain in the object
 
             //Check the object contains only 1 domain
-            if (!isArray) {
-                print("Single Domain");
-
-                //initialize variables
-                company = cd.getCompany();
-                domain = cd.getDomain();
-
-                url = "https://www.email-format.com/d/" + domain;
-
-                String userAgent = GetUserAgent.getAgent();
-
-                try {
-                    print("\nCompany: " + company + " Domain: " + domain);
-
-                    System.setProperty("javax.net.ssl.trustStore", "email-format.jks");
-
-                    //connect to URL, retrieve HTML source
-                    Document doc = Jsoup.connect(url).userAgent(userAgent).referrer("https://www.email-format.com/i/search_result/?q=" + domain).timeout(0).get();
-
-                    //Create an object to store objects on the page
-                    Elements formats = doc.select("[class=\"format fl\"]");
-
-                    if (formats.size() > 0) {
-                        for (Element link : formats) {
-                            String form = link.text();
-                            CompanyFormat cf = new CompanyFormat(company, form);
-                            formatList.add(cf);
-                            print(form);
-                        }
-                    }
-                    count++;
-                    print("number of queries : " + count);
-                } catch (HttpStatusException e) {
-                    print(e.getMessage() + " " + e.getUrl() + " | " + e.getStatusCode());
-                } catch (UnknownHostException e) {
-                    print("Unknown Host: " + e.getMessage());
-                } catch (ConnectException e) {
-                    print(e.getMessage());
-                } catch (SSLHandshakeException e) {
-                    print(e.getMessage());
-                } catch (SocketException e) {
-                    print(e.getMessage());
-                } catch (SSLException e) {
-                    print(e.getMessage());
-                } catch (UnsupportedMimeTypeException e) {
-                    print("Cannot open page with mime type " + e.getMimeType());
-                } catch (IllegalArgumentException e) {
-                    print(e.getMessage());
-                } catch (SocketTimeoutException e) {
-                    print(e.getMessage());
-                } catch (IOException e) {
-                    print(e.getMessage());
-                }
-                try {
-                    Thread.sleep(20000);
-                } catch (InterruptedException e) {
-
-                }
-
-            } else {
-                print("Multi Domain");
 
                 //initialize variables
                 company = cd.getCompany();
@@ -174,8 +121,6 @@ public class ListLinks {
                     }
                 }
             }
-
-        }
         for (int i = 0; i < formatList.size(); i++) {
             String cCheck = formatList.get(i).getCompany();
             if (i > 0) {
