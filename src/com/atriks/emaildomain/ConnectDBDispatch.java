@@ -32,14 +32,12 @@ public class ConnectDBDispatch {
         String[] companies = new String[3000];
         String[] domains = new String[3000];
 
-        while(rs.next())
-        {
+        while (rs.next()) {
             companies[i] = rs.getString("company");
             domains[i] = rs.getString("ehost");
             cdList.add(new CompDom(companies[i].trim(), domains[i].trim()));
             i++;
         }
-
 
 
         return cdList;

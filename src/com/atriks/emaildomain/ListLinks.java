@@ -36,13 +36,10 @@ public class ListLinks {
 
         ArrayList<CompDom> cdList = new ArrayList<CompDom>();
 
-        for(String s: args)
-        {
-            if(!s.equals(null))
-            {
+        for (String s : args) {
+            if (!s.equals(null)) {
                 cdList = ConnectDBDispatch.retrieveCDDispatch(s);
-            }
-            else
+            } else
                 print("Session ID required. Exiting.");
         }
 
@@ -61,66 +58,68 @@ public class ListLinks {
 
             //Check the object contains only 1 domain
 
-                //initialize variables
-                company = cd.getCompany();
-                domains = cd.getDomains();
+            //initialize variables
+            company = cd.getCompany();
+            domains = cd.getDomains();
 
-                String userAgent = GetUserAgent.getAgent();
+            String userAgent = GetUserAgent.getAgent();
 
-                //Iterate through list of domains
-                for (int j = 0; j < cd.getNumDomains(); j++) {
-                    url = "https://www.email-format.com/d/" + domains[j];
+            //Iterate through list of domains
+            for (int j = 0; j < cd.getNumDomains(); j++) {
+                url = "https://www.email-format.com/d/" + domains[j];
 
-                    try {
-                        print("\nCompany: " + company + " Domain: " + domains[j]);
+                try {
+                    print("\nCompany: " + company + " Domain: " + domains[j]);
 
-                        System.setProperty("javax.net.ssl.trustStore", "email-format.jks");
+                    System.setProperty("javax.net.ssl.trustStore", "email-format.jks");
 
-                        //connect to URL, retrieve HTML source
-                        Document doc = Jsoup.connect(url).userAgent(userAgent).referrer("https://www.email-format.com/i/search_result/?q=" + domains[j]).timeout(0).get();
+                    //connect to URL, retrieve HTML source
+                    Document doc = Jsoup.connect(url).userAgent(userAgent).referrer("https://www.email-format.com/i/search_result/?q=" + domains[j]).timeout(0).get();
 
-                        //Create an object to store objects on the page
-                        Elements formats = doc.select("[class=\"format fl\"]");
+                    //Create an object to store objects on the page
+                    Elements formats = doc.select("[class=\"format fl\"]");
 
-                        if (formats.size() > 0) {
-                            for (Element link : formats) {
-                                String form = link.text();
-                                CompanyFormat cf = new CompanyFormat(company, form);
-                                formatList.add(cf);
-                                print(form);
-                            }
+                    if (formats.size() > 0) {
+                        for (Element link : formats) {
+                            String form = link.text();
+                            CompanyFormat cf = new CompanyFormat(company, form);
+                            formatList.add(cf);
+                            UpdateFormats.updateFormat(company, form);
+                            MarkComplete.MarkComplete(company, domains[j]);
+                            print(form);
                         }
-                        count++;
-                        print("number of queries : " + count);
-                    } catch (HttpStatusException e) {
-                        print(e.getMessage() + " " + e.getUrl() + " | " + e.getStatusCode());
-                    } catch (UnknownHostException e) {
-                        print("Unknown Host: " + e.getMessage());
-                    } catch (ConnectException e) {
-                        print(e.getMessage());
-                    } catch (SSLHandshakeException e) {
-                        print(e.getMessage());
-                    } catch (SocketException e) {
-                        print(e.getMessage());
-                    } catch (SSLException e) {
-                        print(e.getMessage());
-                    } catch (UnsupportedMimeTypeException e) {
-                        print("Cannot open page with mime type " + e.getMimeType());
-                    } catch (IllegalArgumentException e) {
-                        print(e.getMessage());
-                    } catch (SocketTimeoutException e) {
-                        print(e.getMessage());
-                    } catch (IOException e) {
-                        print(e.getMessage());
                     }
+                    count++;
+                    print("number of queries : " + count);
+                } catch (HttpStatusException e) {
+                    print(e.getMessage() + " " + e.getUrl() + " | " + e.getStatusCode());
+                } catch (UnknownHostException e) {
+                    print("Unknown Host: " + e.getMessage());
+                } catch (ConnectException e) {
+                    print(e.getMessage());
+                } catch (SSLHandshakeException e) {
+                    print(e.getMessage());
+                } catch (SocketException e) {
+                    print(e.getMessage());
+                } catch (SSLException e) {
+                    print(e.getMessage());
+                } catch (UnsupportedMimeTypeException e) {
+                    print("Cannot open page with mime type " + e.getMimeType());
+                } catch (IllegalArgumentException e) {
+                    print(e.getMessage());
+                } catch (SocketTimeoutException e) {
+                    print(e.getMessage());
+                } catch (IOException e) {
+                    print(e.getMessage());
+                }
 
-                    try {
-                        Thread.sleep(20000);
-                    } catch (InterruptedException e) {
+                try {
+                    Thread.sleep(20000);
+                } catch (InterruptedException e) {
 
-                    }
                 }
             }
+        }
         for (int i = 0; i < formatList.size(); i++) {
             String cCheck = formatList.get(i).getCompany();
             if (i > 0) {

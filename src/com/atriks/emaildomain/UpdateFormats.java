@@ -7,9 +7,9 @@ import java.sql.*;
 /**
  * Created by Programmer on 2/4/2015.
  */
-public class MarkComplete {
+public class UpdateFormats {
 
-    public static void MarkComplete(String company, String domain) throws SQLException {
+    public static void updateFormat(String company, String format) throws SQLException{
 
         SQLServerDataSource ds = new SQLServerDataSource();
         ds.setUser("sa");
@@ -21,6 +21,7 @@ public class MarkComplete {
 
         Statement state = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
-        state.executeUpdate("exec s_ef_mark_complete \"" + company + "\" \"" + domain + "\"");
+        state.executeUpdate("insert into parse_email_formats (company, email_format) values (\"" + company + "\", \"" + format + "\")");
+
     }
 }
