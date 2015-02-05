@@ -4,7 +4,6 @@ import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.UnsupportedMimeTypeException;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import javax.net.ssl.SSLException;
@@ -44,7 +43,6 @@ public class ListLinks {
         String company;
         String domain;
         String url;
-        ArrayList<CompanyFormat> formatList = new ArrayList<CompanyFormat>();
         int count = 0;
 
         //Iterate through list of companies and domains
@@ -72,8 +70,6 @@ public class ListLinks {
                     if (formats.size() > 0) {
                             String form = formats.first().text();
                             form = ParseFormat.parseFormat(form);
-                            CompanyFormat cf = new CompanyFormat(company, form);
-                            formatList.add(cf);
                             UpdateFormats.updateFormat(company, form);
                             MarkComplete.markComplete(company, domain);
                             print(form);
@@ -108,16 +104,6 @@ public class ListLinks {
 
                 }
 
-        }
-        for (int i = 0; i < formatList.size(); i++) {
-            String cCheck = formatList.get(i).getCompany();
-            if (i > 0) {
-                if (cCheck.equals(formatList.get(i - 1).getCompany())) {
-                    print(formatList.get(i).getFormat());
-                } else
-                    print("Listing retrieved formats for " + formatList.get(i).getCompany() + ":\n");
-            } else
-                print("Listing retrieved formats for " + formatList.get(i).getCompany() + ":\n");
         }
         print("number of queries : " + count);
     }
