@@ -16,6 +16,7 @@ import java.net.UnknownHostException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.MissingFormatArgumentException;
+import java.util.UUID;
 
 /**
  * Created by Dan Chick
@@ -33,8 +34,8 @@ public class ListLinks {
         ArrayList<CompDom> cdList;
 
         if (args.length == 0) {
-            print("Session ID required. Exiting.");
-            return;
+            java.net.InetAddress localMachine = java.net.InetAddress.getLocalHost();
+            cdList = ConnectDBDispatch.retrieveCDDispatch(localMachine.getHostName() + UUID.randomUUID());
         } else {
             cdList = ConnectDBDispatch.retrieveCDDispatch(args[0]);
         }
