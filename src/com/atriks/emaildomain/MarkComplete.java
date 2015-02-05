@@ -2,10 +2,7 @@ package com.atriks.emaildomain;
 
 import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 /**
  * Created by Dan Chick on 2/4/2015.
@@ -23,8 +20,14 @@ public class MarkComplete {
         ds.setDatabaseName("li_parse");
         Connection con = ds.getConnection();
 
-        Statement state = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
-        state.executeUpdate("exec s_ef_mark_complete \"" + company + "\" \"" + domain + "\"");
+        PreparedStatement ps = con.prepareStatement("exec s_ef_mark_complete ?, ?");
+        ps.setEscapeProcessing(true);
+        ps.setString(1, company);
+        ps.setString(2, domain);
+
+        ps.execute();
+
+        con.close();
     }
 }

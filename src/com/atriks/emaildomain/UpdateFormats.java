@@ -25,7 +25,10 @@ public class UpdateFormats {
 
         Statement state = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
-        state.executeUpdate("insert into parse_email_formats (company, email_format) values (\"" + company + "\", \"" + format + "\")");
+        String statement = "insert into parse_email_formats values (\'" + company + "\', \'" + format +"\' )";
 
+        state.execute(statement);
+
+        con.close();
     }
 }

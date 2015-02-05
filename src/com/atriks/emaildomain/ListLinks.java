@@ -56,8 +56,6 @@ public class ListLinks {
 
             String userAgent = GetUserAgent.getAgent();
 
-            //Iterate through list of domains
-            for (int j = 0; j < cd.getNumDomains(); j++) {
                 url = "https://www.email-format.com/d/" + domain;
 
                 try {
@@ -72,8 +70,7 @@ public class ListLinks {
                     Elements formats = doc.select("[class=\"format fl\"]");
 
                     if (formats.size() > 0) {
-                        for (Element link : formats) {
-                            String form = link.text();
+                            String form = formats.first().text();
                             form = ParseFormat.parseFormat(form);
                             CompanyFormat cf = new CompanyFormat(company, form);
                             formatList.add(cf);
@@ -81,7 +78,6 @@ public class ListLinks {
                             MarkComplete.markComplete(company, domain);
                             print(form);
                         }
-                    }
                     count++;
                     print("number of queries : " + count);
                 } catch (HttpStatusException e) {
@@ -111,7 +107,7 @@ public class ListLinks {
                 } catch (InterruptedException ignored) {
 
                 }
-            }
+
         }
         for (int i = 0; i < formatList.size(); i++) {
             String cCheck = formatList.get(i).getCompany();

@@ -24,9 +24,13 @@ public class ConnectDBDispatch {
 
         Statement state = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
-        state.execute("exec s_prep_ef_dispatch");
+        PreparedStatement dispatch = con.prepareStatement("exec s_prep_ef_dispatch");
+        dispatch.execute();
 
-        PreparedStatement ps = con.prepareStatement("exec s_ef_get_work \"" + s + "\"");
+
+        PreparedStatement ps = con.prepareStatement("exec s_ef_get_work ?");
+        ps.setEscapeProcessing(true);
+        ps.setString(1, s);
         ResultSet rs = ps.executeQuery();
 
         int i = 0;
@@ -40,6 +44,7 @@ public class ConnectDBDispatch {
             i++;
         }
 
+        con.close();
 
         return cdList;
     }
