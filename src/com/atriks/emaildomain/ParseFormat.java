@@ -7,7 +7,7 @@ public class ParseFormat {
 
     public static String parseFormat(String format){
 
-        String parsedFormat = new String();
+        String parsedFormat;
 
         if(format.equals("first_name"))
             parsedFormat = "{first_name}";

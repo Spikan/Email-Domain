@@ -34,13 +34,14 @@ public class ListLinks {
 
     public static void main(String[] args) throws IOException, SQLException {
 
-        ArrayList<CompDom> cdList = new ArrayList<CompDom>();
+        ArrayList<CompDom> cdList;
 
-        for (String s : args) {
-            if (!s.equals(null)) {
-                cdList = ConnectDBDispatch.retrieveCDDispatch(s);
-            } else
-                print("Session ID required. Exiting.");
+        if (args.length==0) {
+            print("Session ID required. Exiting.");
+            return;
+        }
+        else {
+            cdList = ConnectDBDispatch.retrieveCDDispatch(args[0]);
         }
 
         //Create variables
@@ -53,10 +54,6 @@ public class ListLinks {
 
         //Iterate through list of companies and domains
         for (CompDom cd : cdList) {
-
-            boolean isArray = cd.isArray(); //check if there is more than one domain in the object
-
-            //Check the object contains only 1 domain
 
             //initialize variables
             company = cd.getCompany();
