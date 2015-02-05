@@ -82,6 +82,7 @@ public class ListLinks {
                     if (formats.size() > 0) {
                         for (Element link : formats) {
                             String form = link.text();
+                            form = ParseFormat.parseFormat(form);
                             CompanyFormat cf = new CompanyFormat(company, form);
                             formatList.add(cf);
                             UpdateFormats.updateFormat(company, form);
