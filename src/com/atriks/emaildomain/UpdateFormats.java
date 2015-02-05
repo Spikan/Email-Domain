@@ -2,14 +2,18 @@ package com.atriks.emaildomain;
 
 import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
- * Created by Programmer on 2/4/2015.
+ * Created by Dan Chick on 2/4/2015.
+ * For Atriks, LLC
  */
 public class UpdateFormats {
 
-    public static void updateFormat(String company, String format) throws SQLException{
+    public static void updateFormat(String company, String format) throws SQLException {
 
         SQLServerDataSource ds = new SQLServerDataSource();
         ds.setUser("sa");
