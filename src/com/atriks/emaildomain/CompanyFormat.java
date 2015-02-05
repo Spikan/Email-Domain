@@ -1,7 +1,8 @@
 package com.atriks.emaildomain;
 
 /**
- * Created by Programmer on 1/22/2015.
+ * Created by Dan Chick on 1/22/2015.
+ * For Atriks, LLC
  */
 public class CompanyFormat {
 
