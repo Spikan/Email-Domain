@@ -3,7 +3,6 @@ package com.atriks.emaildomain;
 /**
  * Created by Dan Chick
  * for Atriks, LLC
- * 2014
  */
 public class CompDom {
 

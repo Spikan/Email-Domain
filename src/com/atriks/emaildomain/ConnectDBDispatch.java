@@ -6,7 +6,8 @@ import java.sql.*;
 import java.util.ArrayList;
 
 /**
- * Created by Programmer on 2/3/2015.
+ * Created by Dan Chick on 2/3/2015.
+ * For Atriks, LLC
  */
 public class ConnectDBDispatch {
 
