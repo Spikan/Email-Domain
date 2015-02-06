@@ -19,11 +19,7 @@ public class CompDom {
         dArray = false;
     }
 
-<<<<<<< HEAD
-    public CompDom(String x, String[] y, int i){
-=======
     public CompDom(String x, String[] y, int i) {
->>>>>>> parser
         company = x;
         domains = y;
         dArray = true;
@@ -47,14 +43,9 @@ public class CompDom {
         return domains;
     }
 
-<<<<<<< HEAD
-    public boolean isArray(){
-        return dArray;
-=======
     public boolean isArray() {
         if (dArray) return true;
         else return false;
->>>>>>> parser
     }
 
     public int getNumDomains() {
