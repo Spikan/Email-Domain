@@ -57,12 +57,10 @@ public class ListLinks {
             domain = cd.getDomain();
 
 
-            if(domainCheck.equals(null))
-                domainCheck = cd.getDomain();
-
-            if(domainCheck.equals(domain))
+            if(isEqual(domain, domainCheck)) {
+                MarkComplete.markComplete(company, domain);
                 continue;
-
+            }
             else
                 domainCheck = cd.getDomain();
 
@@ -129,6 +127,10 @@ public class ListLinks {
         } catch (MissingFormatArgumentException ignored) {
 
         }
+    }
+
+    public static boolean isEqual(Object o1, Object o2) {
+        return o1 == o2 || (o1 != null && o1.equals(o2));
     }
 
 }
