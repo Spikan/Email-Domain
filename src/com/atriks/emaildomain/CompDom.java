@@ -3,7 +3,6 @@ package com.atriks.emaildomain;
 /**
  * Created by Dan Chick
  * for Atriks, LLC
- * 2014
  */
 public class CompDom {
 
@@ -14,13 +13,17 @@ public class CompDom {
     public boolean dArray;
 
 
-    public CompDom(String x, String y){
+    public CompDom(String x, String y) {
         company = x;
         domain = y;
         dArray = false;
     }
 
+<<<<<<< HEAD
     public CompDom(String x, String[] y, int i){
+=======
+    public CompDom(String x, String[] y, int i) {
+>>>>>>> parser
         company = x;
         domains = y;
         dArray = true;
@@ -28,27 +31,33 @@ public class CompDom {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return company + " " + domain;
     }
 
-    public String getCompany(){
+    public String getCompany() {
         return company;
     }
 
-    public String getDomain(){
+    public String getDomain() {
         return domain;
     }
 
-    public String[] getDomains(){
+    public String[] getDomains() {
         return domains;
     }
 
+<<<<<<< HEAD
     public boolean isArray(){
         return dArray;
+=======
+    public boolean isArray() {
+        if (dArray) return true;
+        else return false;
+>>>>>>> parser
     }
 
-    public int getNumDomains(){
+    public int getNumDomains() {
         return numDomains;
     }
 }
