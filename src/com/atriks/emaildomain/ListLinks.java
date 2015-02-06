@@ -43,17 +43,31 @@ public class ListLinks {
         //Create variables
         String company;
         String domain;
+        String domainCheck = null;
         String url;
         int count = 0;
 
         //Iterate through list of companies and domains
         for (CompDom cd : cdList) {
 
+
+
             //initialize variables
             company = cd.getCompany();
             domain = cd.getDomain();
 
-            String userAgent = GetUserAgent.getAgent();
+
+            if(domainCheck.equals(null))
+                domainCheck = cd.getDomain();
+
+            if(domainCheck.equals(domain))
+                continue;
+
+            else
+                domainCheck = cd.getDomain();
+
+
+                String userAgent = GetUserAgent.getAgent();
 
                 url = "https://www.email-format.com/d/" + domain;
 
@@ -71,7 +85,7 @@ public class ListLinks {
                     if (formats.size() > 0) {
                             String form = formats.first().text();
                             form = ParseFormat.parseFormat(form);
-                            UpdateFormats.updateFormat(company, form);
+                            UpdateFormats.updateFormat(domain, form);
                             MarkComplete.markComplete(company, domain);
                             print(form);
                         }

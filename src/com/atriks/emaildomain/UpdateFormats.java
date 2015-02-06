@@ -13,7 +13,7 @@ import java.sql.Statement;
  */
 public class UpdateFormats {
 
-    public static void updateFormat(String company, String format) throws SQLException {
+    public static void updateFormat(String domain, String format) throws SQLException {
 
         SQLServerDataSource ds = new SQLServerDataSource();
         ds.setUser("sa");
@@ -25,7 +25,7 @@ public class UpdateFormats {
 
         Statement state = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
-        String statement = "insert into parse_email_formats values (\'" + company + "\', \'" + format +"\' )";
+        String statement = "insert into parse_email_formats values (\'" + domain + "\', \'" + format +"\' )";
 
         state.execute(statement);
 
