@@ -1,0 +1,1 @@
+select top 10000 dbo.RemoveNonASCII(company) as company, ehost, total from qa_li_company_email_domains where status = 1 order by total desc
