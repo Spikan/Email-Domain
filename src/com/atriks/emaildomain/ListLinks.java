@@ -87,6 +87,8 @@ public class ListLinks {
                             MarkComplete.markComplete(company, domain);
                             print(form);
                         }
+                    else MarkWrong.markWrong(company, domain);
+
                     count++;
                     print("number of queries : " + count);
                 } catch (HttpStatusException e) {
