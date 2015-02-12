@@ -2,7 +2,10 @@ package com.atriks.emaildomain;
 
 import com.microsoft.sqlserver.jdbc.SQLServerDataSource;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**

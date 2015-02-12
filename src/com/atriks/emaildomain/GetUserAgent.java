@@ -4,10 +4,10 @@ import java.util.Random;
 
 /**
  * Created by Dan Chick on 1/12/2015.
-<<<<<<< HEAD
-=======
+ * <<<<<<< HEAD
+ * =======
  * For Atriks, LLC
->>>>>>> parser
+ * >>>>>>> parser
  */
 public class GetUserAgent {
 
