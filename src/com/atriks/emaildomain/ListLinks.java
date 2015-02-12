@@ -1,5 +1,14 @@
 package com.atriks.emaildomain;
 
+import org.jsoup.HttpStatusException;
+import org.jsoup.Jsoup;
+import org.jsoup.UnsupportedMimeTypeException;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+import javax.net.ssl.SSLException;
+import javax.net.ssl.SSLHandshakeException;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.SocketException;
@@ -7,16 +16,6 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
-
-import org.jsoup.HttpStatusException;
-import org.jsoup.Jsoup;
-import org.jsoup.UnsupportedMimeTypeException;
-import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
-
-import javax.net.ssl.SSLException;
-import javax.net.ssl.SSLHandshakeException;
 
 /**
  * Created by Dan Chick
@@ -28,7 +27,7 @@ import javax.net.ssl.SSLHandshakeException;
  * A program that will take a list of companies and domains
  * and check to see if the official website of that company
  * is the listed domain by scraping Wikipedia
- *
+ * <p/>
  * Input: List of companies and domains in a custom CompDom object
  * Output: List of queries to use in SQL Server
  */
@@ -72,7 +71,7 @@ public class ListLinks {
                 //url1 = company.replaceAll("[^\\x00-\\x7F]","");
                 //url = url0 + url1;
 
-                url = "http://" + domain;
+                url = "https://https://www.google.com/search?&q=" + company;
 
                 String userAgent = GetUserAgent.getAgent();
 
@@ -80,13 +79,20 @@ public class ListLinks {
                     print("\nCompany: " + company + " Domain: " + domain);
 
                     //connect to URL, retrieve HTML source
-                    Document doc = Jsoup.connect(url).userAgent(userAgent).timeout(0).get();
+                    Document doc = Jsoup.connect(url).userAgent(userAgent).referrer("https://google.com").timeout(0).get();
 
                     //Create an object to store every link object on the page
                     //selects them by looking for <a href=""></a>
-                    Elements links = doc.select(":contains("+ company +")");
+                    Elements links = doc.select("cite._Rm");
 
-                    if(links.size() > 0){
+                    for (Element link : links) {
+                        String lString = link.toString();
+                        lString = lString.replaceAll("</?[^>]+>", "");
+                        if(lString.contains(domain))
+                        print(lString);
+                    }
+
+                   /* if(links.size() > 0){
 
                         boolean check = false;
 
@@ -105,49 +111,33 @@ public class ListLinks {
                                 queryList.add("update li_parse..qa_li_company_email_domains set [status] = 0, last_updated = getdate() where company like '" + company + "' and ehost not like '" + domain.trim() + "'");
                             } else
                                 print("NO MATCH...\n ");
-                        }
-                }
-                catch(HttpStatusException e)
-                {
-                    print(e.getMessage() + " " + e.getUrl()  + " | " + e.getStatusCode());
-                }
-                catch(UnknownHostException e)
-                {
+                        }*/
+                } catch (HttpStatusException e) {
+                    print(e.getMessage() + " " + e.getUrl() + " | " + e.getStatusCode());
+                } catch (UnknownHostException e) {
                     print("Unknown Host: " + e.getMessage());
-                }
-                catch(ConnectException e)
-                {
+                } catch (ConnectException e) {
                     print(e.getMessage());
-                }
-                catch(SSLHandshakeException e)
-                {
+                } catch (SSLHandshakeException e) {
                     print(e.getMessage());
-                }
-                catch(SocketException e)
-                {
+                } catch (SocketException e) {
                     print(e.getMessage());
-                }
-                catch(SSLException e)
-                {
+                } catch (SSLException e) {
                     print(e.getMessage());
-                }
-                catch(UnsupportedMimeTypeException e)
-                {
+                } catch (UnsupportedMimeTypeException e) {
                     print("Cannot open page with mime type " + e.getMimeType());
-                }
-                catch(IllegalArgumentException e)
-                {
+                } catch (IllegalArgumentException e) {
+                    print(e.getMessage());
+                } catch (SocketTimeoutException e) {
+                    print(e.getMessage());
+                } catch (IOException e) {
                     print(e.getMessage());
                 }
-                catch(SocketTimeoutException e)
-                {
-                    print(e.getMessage());
-                }
-                catch(IOException e)
-                {
-                    print(e.getMessage());
-                }
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException ignored) {
 
+                }
             } else {
                 print("Multi Domain");
 
@@ -163,22 +153,28 @@ public class ListLinks {
                 String userAgent = GetUserAgent.getAgent();
 
                 //Iterate through list of domains
-                for (int j = 0; j < cd.getNumDomains(); j++) {
-                    url = "http://" + domains[j];
 
+                url = "https://www.google.com/search?&q=" + company;
+                for (int j = 0; j < cd.getNumDomains(); j++) {
                     try {
                         print("\nCompany: " + company + " Domain: " + domains[j]);
 
 
                         //connect to URL, retrieve HTML source
-                        Document doc = Jsoup.connect(url).userAgent(userAgent).timeout(0).get();
+                        Document doc = Jsoup.connect(url).userAgent(userAgent).referrer("https://google.com").timeout(0).get();
 
                         //Create an object to store every link object on the page
                         //selects them by looking for <a href=""></a>
-                        Elements links = doc.select(":contains(" + company + ")");
+                        Elements links = doc.select("cite._Rm");
 
+                        for (Element link : links) {
+                            String lString = link.toString();
+                            lString = lString.replaceAll("</?[^>]+>", "");
+                            if(lString.contains(domains[j]))
+                            print(lString);
+                        }
 
-                        if(links.size() > 0){
+                       /* if(links.size() > 0){
                             boolean check = false;
 
                                 for (String aQueryList : queryList) {
@@ -195,49 +191,34 @@ public class ListLinks {
                                     queryList.add("update li_parse..qa_li_company_email_domains set [status] = 0, last_updated = getdate() where company like '" + company + "' and ehost not like '" + domains[j].trim() + "'");
                                 } else
                                     print("NO MATCH...\n ");
-                            }
+                            }*/
 
-                    }
-                    catch(HttpStatusException e)
-                    {
-                        print(e.getMessage() + " " + e.getUrl()  + " | " + e.getStatusCode());
-                    }
-                    catch(UnknownHostException e)
-                    {
+                    } catch (HttpStatusException e) {
+                        print(e.getMessage() + " " + e.getUrl() + " | " + e.getStatusCode());
+                    } catch (UnknownHostException e) {
                         print("Unknown Host: " + e.getMessage());
-                    }
-                    catch(ConnectException e)
-                    {
+                    } catch (ConnectException e) {
                         print(e.getMessage());
-                    }
-                    catch(SSLHandshakeException e)
-                    {
+                    } catch (SSLHandshakeException e) {
                         print(e.getMessage());
-                    }
-                    catch(SocketException e)
-                    {
+                    } catch (SocketException e) {
                         print(e.getMessage());
-                    }
-                    catch(SSLException e)
-                    {
+                    } catch (SSLException e) {
                         print(e.getMessage());
-                    }
-                    catch(UnsupportedMimeTypeException e)
-                    {
+                    } catch (UnsupportedMimeTypeException e) {
                         print("Cannot open page with mime type " + e.getMimeType());
-                    }
-                    catch(IllegalArgumentException e)
-                    {
+                    } catch (IllegalArgumentException e) {
+                        print(e.getMessage());
+                    } catch (SocketTimeoutException e) {
+                        print(e.getMessage());
+                    } catch (IOException e) {
                         print(e.getMessage());
                     }
-                    catch(SocketTimeoutException e)
-                    {
-                        print(e.getMessage());
-                    }
-                    catch(IOException e)
-                    {
-                        print(e.getMessage());
-                    }
+                }
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException ignored) {
+
                 }
             }
 

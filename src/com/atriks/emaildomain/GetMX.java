@@ -8,6 +8,10 @@ import org.xbill.DNS.*;
  */
 public class GetMX {
 
+    private static void print(String msg, Object... args) {
+        System.out.println(String.format(msg, args));
+    }
+
     public String GetMX(String company) {
         String r = "MX Record Retrieval Error";
 
@@ -23,9 +27,6 @@ public class GetMX {
             r = "No MX Record Found";
         }
         return r;
-    }
-    private static void print(String msg, Object... args) {
-        System.out.println(String.format(msg, args));
     }
 }
 
