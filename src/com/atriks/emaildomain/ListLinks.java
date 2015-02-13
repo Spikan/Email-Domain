@@ -31,36 +31,34 @@ public class ListLinks {
 
     public static void main(String[] args) throws IOException, SQLException {
 
-        ArrayList<CompDom> cdList;
+        String[] domainList;
 
         if (args.length == 0) {
             java.net.InetAddress localMachine = java.net.InetAddress.getLocalHost();
-            cdList = ConnectDBDispatch.retrieveCDDispatch(localMachine.getHostName() + UUID.randomUUID());
+            domainList = ConnectDBDispatch.retrieveCDDispatch(localMachine.getHostName() + UUID.randomUUID());
         } else {
-            cdList = ConnectDBDispatch.retrieveCDDispatch(args[0]);
+            domainList = ConnectDBDispatch.retrieveCDDispatch(args[0]);
         }
 
         //Create variables
-        String company;
         String domain;
         String domainCheck = null;
         String url;
         int count = 0;
 
         //Iterate through list of companies and domains
-        for (CompDom cd : cdList) {
+        for (String d : domainList) {
 
 
             //initialize variables
-            company = cd.getCompany();
-            domain = cd.getDomain();
+            domain = d;
 
 
             if (isEqual(domain, domainCheck)) {
-                MarkComplete.markComplete(company, domain);
+                MarkComplete.markComplete(domain);
                 continue;
             } else
-                domainCheck = cd.getDomain();
+                domainCheck = d;
 
 
             String userAgent = GetUserAgent.getAgent();
@@ -68,7 +66,7 @@ public class ListLinks {
             url = "https://www.email-format.com/d/" + domain;
 
             try {
-                print("\nCompany: " + company + " Domain: " + domain);
+                print("\nDomain: " + domain);
 
                 System.setProperty("javax.net.ssl.trustStore", "email-format.jks");
 
@@ -82,9 +80,9 @@ public class ListLinks {
                     String form = formats.first().text();
                     form = ParseFormat.parseFormat(form);
                     UpdateFormats.updateFormat(domain, form);
-                    MarkComplete.markComplete(company, domain);
+                    MarkComplete.markComplete(domain);
                     print(form);
-                } else MarkWrong.markWrong(company, domain);
+                } else MarkWrong.markWrong(domain);
 
                 count++;
                 print("number of queries : " + count);

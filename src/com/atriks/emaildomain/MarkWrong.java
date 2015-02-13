@@ -12,7 +12,7 @@ import java.sql.SQLException;
  */
 public class MarkWrong {
 
-    public static void markWrong(String company, String domain) throws SQLException {
+    public static void markWrong(String domain) throws SQLException {
 
         SQLServerDataSource ds = new SQLServerDataSource();
         ds.setUser("sa");
@@ -23,10 +23,9 @@ public class MarkWrong {
         Connection con = ds.getConnection();
 
 
-        PreparedStatement ps = con.prepareStatement("exec s_ef_mark_wrong ?, ?");
+        PreparedStatement ps = con.prepareStatement("exec s_ef_mark_wrong ?");
         ps.setEscapeProcessing(true);
-        ps.setString(1, company);
-        ps.setString(2, domain);
+        ps.setString(1, domain);
 
         ps.execute();
 

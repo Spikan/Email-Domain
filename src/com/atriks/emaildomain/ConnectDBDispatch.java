@@ -14,9 +14,7 @@ import java.util.ArrayList;
  */
 public class ConnectDBDispatch {
 
-    public static ArrayList<CompDom> retrieveCDDispatch(String s) throws SQLException {
-        ArrayList<CompDom> cdList = new ArrayList<CompDom>();
-
+    public static String[] retrieveCDDispatch(String s) throws SQLException {
         SQLServerDataSource ds = new SQLServerDataSource();
         ds.setUser("sa");
         ds.setPassword("liamcow");
@@ -25,25 +23,22 @@ public class ConnectDBDispatch {
         ds.setDatabaseName("li_parse");
         Connection con = ds.getConnection();
 
-        PreparedStatement ps = con.prepareStatement("exec s_ef_get_work ?");
+        PreparedStatement ps = con.prepareStatement("exec s_ef_get_work_no_company ?");
         ps.setEscapeProcessing(true);
         ps.setString(1, s);
         ResultSet rs = ps.executeQuery();
 
         int i = 0;
-        String[] companies = new String[3000];
         String[] domains = new String[3000];
 
         while (rs.next()) {
-            companies[i] = rs.getString("company");
             domains[i] = rs.getString("ehost");
-            cdList.add(new CompDom(companies[i].trim(), domains[i].trim()));
             i++;
         }
 
         con.close();
 
-        return cdList;
+        return domains;
     }
 
 }

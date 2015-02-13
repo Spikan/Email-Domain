@@ -25,7 +25,7 @@ public class UpdateFormats {
 
         Statement state = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
-        String statement = "insert into parse_email_formats values (\'" + domain + "\', \'" + format + "\' )";
+        String statement = "insert into no_com_parse_email_formats values (\'" + domain + "\', \'" + format + "\' )";
 
         state.execute(statement);
 
