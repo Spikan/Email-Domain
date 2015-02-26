@@ -23,7 +23,7 @@ public class MarkWrong {
         Connection con = ds.getConnection();
 
 
-        PreparedStatement ps = con.prepareStatement("exec s_ef_mark_wrong ?");
+        PreparedStatement ps = con.prepareStatement("exec s_ef_mark_wrong_no_company ?");
         ps.setEscapeProcessing(true);
         ps.setString(1, domain);
 

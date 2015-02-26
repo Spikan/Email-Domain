@@ -1,4 +1,4 @@
 Manifest-Version: 1.0
-Class-Path: dnsjava-2.1.6.jar sqljdbc41.jar jsoup-1.8.1.jar
+Class-Path: sqljdbc41.jar dnsjava-2.1.6.jar jsoup-1.8.1.jar
 Main-Class: com.atriks.emaildomain.ListLinks
 
