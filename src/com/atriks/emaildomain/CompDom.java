@@ -11,7 +11,7 @@ public class CompDom {
     public String domain;
     public String domains[];
     public int numDomains = 0;
-    public boolean dArray;
+    public boolean dArray = false;
 
 
     public CompDom(String x, String y) {
@@ -44,10 +44,7 @@ public class CompDom {
         return domains;
     }
 
-    public boolean isArray() {
-        if (dArray) return true;
-        else return false;
-    }
+    public boolean isArray() { return dArray; }
 
     public int getNumDomains() {
         return numDomains;

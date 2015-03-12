@@ -16,6 +16,7 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.UUID;
 
 /**
  * Created by Dan Chick
@@ -40,7 +41,16 @@ public class ListLinks {
     public static void main(String[] args) throws IOException, SQLException {
 
         //Get list of companies and domains to parse
-        ArrayList<CompDom> cdList = ConnectDB.retrieveCD();
+        //ArrayList<CompDom> cdList = ConnectDB.retrieveCD();
+
+        ArrayList<CompDom> cdList;
+
+        if (args.length == 0) {
+            java.net.InetAddress localMachine = java.net.InetAddress.getLocalHost();
+            cdList = ConnectDBDispatch.retrieveCDDispatch(localMachine.getHostName() + UUID.randomUUID());
+        } else {
+            cdList = ConnectDBDispatch.retrieveCDDispatch(args[0]);
+        }
 
         //Create list to store newly created queries
         ArrayList<String> queryList = new ArrayList<String>();
@@ -85,33 +95,23 @@ public class ListLinks {
                     //selects them by looking for <a href=""></a>
                     Elements links = doc.select("cite._Rm");
 
+                    boolean containsDomain = false;
+
                     for (Element link : links) {
                         String lString = link.toString();
                         lString = lString.replaceAll("</?[^>]+>", "");
-                        if(lString.contains(domain))
-                        print(lString);
+                        if(lString.contains(domain)) {
+                            print(lString);
+                            containsDomain = true;
+                        }
                     }
 
-                   /* if(links.size() > 0){
+                   if(containsDomain) {
+                       print("MATCH FOUND FOR " + company + ": " + domain);
+                       UpdateCompDom.updateCD(domain,company);
+                       MarkComplete.markComplete(company, domain);
+                   } else MarkWrong.markWrong(company,domain);
 
-                        boolean check = false;
-
-                        for (String aQueryList : queryList) {
-                            if (aQueryList.equals("update li_parse..qa_li_company_email_domains set [status] = 1, last_updated = getdate() where company like '" + company + "' and ehost like '" + domain.trim() + "'")) {
-                                check = true;
-                                break;
-                            }
-
-                            }
-
-                            if (!check) {
-
-                                print("MATCH FOUND FOR " + company + ": " + domain);
-                                queryList.add("update li_parse..qa_li_company_email_domains set [status] = 1, last_updated = getdate() where company like '" + company + "' and ehost like '" + domain.trim() + "'");
-                                queryList.add("update li_parse..qa_li_company_email_domains set [status] = 0, last_updated = getdate() where company like '" + company + "' and ehost not like '" + domain.trim() + "'");
-                            } else
-                                print("NO MATCH...\n ");
-                        }*/
                 } catch (HttpStatusException e) {
                     print(e.getMessage() + " " + e.getUrl() + " | " + e.getStatusCode());
                 } catch (UnknownHostException e) {
@@ -134,11 +134,11 @@ public class ListLinks {
                     print(e.getMessage());
                 }
                 try {
-                    Thread.sleep(5000);
+                    Thread.sleep(15000);
                 } catch (InterruptedException ignored) {
 
                 }
-            } else {
+            } else if(cd.getNumDomains() > 0){
                 print("Multi Domain");
 
                 //initialize variables
@@ -167,31 +167,22 @@ public class ListLinks {
                         //selects them by looking for <a href=""></a>
                         Elements links = doc.select("cite._Rm");
 
+                        boolean containsDomain = false;
+
                         for (Element link : links) {
                             String lString = link.toString();
                             lString = lString.replaceAll("</?[^>]+>", "");
-                            if(lString.contains(domains[j]))
-                            print(lString);
+                            if(lString.contains(domains[j])) {
+                                print(lString);
+                                containsDomain = true;
+                            }
                         }
 
-                       /* if(links.size() > 0){
-                            boolean check = false;
-
-                                for (String aQueryList : queryList) {
-                                    if (aQueryList.equals("update li_parse..qa_li_company_email_domains set [status] = 1, last_updated = getdate() where company like '" + company + "' and ehost like '" + domains[j].trim() + "'")) {
-                                        check = true;
-                                        break;
-                                    }
-
-                                }
-
-                                if (!check) {
-                                    print("MATCH FOUND FOR " + company + ": " + domains[j]);
-                                    queryList.add("update li_parse..qa_li_company_email_domains set [status] = 1, last_updated = getdate() where company like '" + company + "' and ehost like '" + domains[j].trim() + "'");
-                                    queryList.add("update li_parse..qa_li_company_email_domains set [status] = 0, last_updated = getdate() where company like '" + company + "' and ehost not like '" + domains[j].trim() + "'");
-                                } else
-                                    print("NO MATCH...\n ");
-                            }*/
+                        if(containsDomain) {
+                            print("MATCH FOUND FOR " + company + ": " + domains[j]);
+                            UpdateCompDom.updateCD(domains[j],company);
+                            MarkComplete.markComplete(company,domains[j]);
+                        } else MarkWrong.markWrong(company,domains[j]);
 
                     } catch (HttpStatusException e) {
                         print(e.getMessage() + " " + e.getUrl() + " | " + e.getStatusCode());
@@ -216,7 +207,7 @@ public class ListLinks {
                     }
                 }
                 try {
-                    Thread.sleep(5000);
+                    Thread.sleep(15000);
                 } catch (InterruptedException ignored) {
 
                 }

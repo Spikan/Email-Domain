@@ -43,6 +43,9 @@ public class ConnectDB {
             ps2.executeUpdate();
             if (domains.length == 1)
                 cdList.add(new CompDom(c.trim(), d.trim()));
+            else if (domains.length == 0 | domains.length < 0) {
+                break;
+            }
             else if (domains.length > 0) {
                 cdList.add(new CompDom(c.trim(), domains, i));
                 while (rs.next()) {
