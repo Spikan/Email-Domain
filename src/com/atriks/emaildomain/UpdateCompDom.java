@@ -25,7 +25,7 @@ public class UpdateCompDom {
 
         Statement state = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 
-        String statement = "insert into compdom_email_formats values (\'" + domain + "\', \'" + company + "\' )";
+        String statement = "insert into parse_compdom values (\'" + domain + "\', \'" + company + "\' )";
 
         state.execute(statement);
 

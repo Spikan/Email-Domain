@@ -52,15 +52,9 @@ public class ListLinks {
             cdList = ConnectDBDispatch.retrieveCDDispatch(args[0]);
         }
 
-        //Create list to store newly created queries
-        ArrayList<String> queryList = new ArrayList<String>();
-
         //Create variables
         String company;
         String domain;
-        String[] domains;
-        //String url0;
-        //String url1;
         String url;
 
         //Iterate through list of companies and domains
@@ -81,7 +75,7 @@ public class ListLinks {
                 //url1 = company.replaceAll("[^\\x00-\\x7F]","");
                 //url = url0 + url1;
 
-                url = "https://https://www.google.com/search?&q=" + company;
+                url = "https://www.google.com/search?&q=" + company;
 
                 String userAgent = GetUserAgent.getAgent();
 
@@ -138,88 +132,8 @@ public class ListLinks {
                 } catch (InterruptedException ignored) {
 
                 }
-            } else if(cd.getNumDomains() > 0){
-                print("Multi Domain");
-
-                //initialize variables
-                company = cd.getCompany();
-                domains = cd.getDomains();
-
-                //create url to scrape from
-                //url0 = "http://en.wikipedia.org/w/index.php?search=";
-                //url1 = company.replaceAll("[^\\x00-\\x7F]","");
-                //url = url0 + url1;
-
-                String userAgent = GetUserAgent.getAgent();
-
-                //Iterate through list of domains
-
-                url = "https://www.google.com/search?&q=" + company;
-                for (int j = 0; j < cd.getNumDomains(); j++) {
-                    try {
-                        print("\nCompany: " + company + " Domain: " + domains[j]);
-
-
-                        //connect to URL, retrieve HTML source
-                        Document doc = Jsoup.connect(url).userAgent(userAgent).referrer("https://google.com").timeout(0).get();
-
-                        //Create an object to store every link object on the page
-                        //selects them by looking for <a href=""></a>
-                        Elements links = doc.select("cite._Rm");
-
-                        boolean containsDomain = false;
-
-                        for (Element link : links) {
-                            String lString = link.toString();
-                            lString = lString.replaceAll("</?[^>]+>", "");
-                            if(lString.contains(domains[j])) {
-                                print(lString);
-                                containsDomain = true;
-                            }
-                        }
-
-                        if(containsDomain) {
-                            print("MATCH FOUND FOR " + company + ": " + domains[j]);
-                            UpdateCompDom.updateCD(domains[j],company);
-                            MarkComplete.markComplete(company,domains[j]);
-                        } else MarkWrong.markWrong(company,domains[j]);
-
-                    } catch (HttpStatusException e) {
-                        print(e.getMessage() + " " + e.getUrl() + " | " + e.getStatusCode());
-                    } catch (UnknownHostException e) {
-                        print("Unknown Host: " + e.getMessage());
-                    } catch (ConnectException e) {
-                        print(e.getMessage());
-                    } catch (SSLHandshakeException e) {
-                        print(e.getMessage());
-                    } catch (SocketException e) {
-                        print(e.getMessage());
-                    } catch (SSLException e) {
-                        print(e.getMessage());
-                    } catch (UnsupportedMimeTypeException e) {
-                        print("Cannot open page with mime type " + e.getMimeType());
-                    } catch (IllegalArgumentException e) {
-                        print(e.getMessage());
-                    } catch (SocketTimeoutException e) {
-                        print(e.getMessage());
-                    } catch (IOException e) {
-                        print(e.getMessage());
-                    }
-                }
-                try {
-                    Thread.sleep(15000);
-                } catch (InterruptedException ignored) {
-
-                }
             }
 
-        }
-
-
-        //print list of queries to be thrown into SQL
-        print("\n\nListing matches for last run:\n");
-        for (String aQueryList : queryList) {
-            System.out.println("\n" + aQueryList + "\n");
         }
 
     }
