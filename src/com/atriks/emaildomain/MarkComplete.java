@@ -22,6 +22,8 @@ public class MarkComplete {
         ds.setDatabaseName("li_parse");
         Connection con = ds.getConnection();
 
+        company = company.replace("\'", "\'\'");
+        company = company.replace("`", "");
 
         PreparedStatement ps = con.prepareStatement("exec s_compdom_mark_complete ?, ?");
         ps.setEscapeProcessing(true);
