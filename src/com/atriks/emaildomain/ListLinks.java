@@ -60,11 +60,7 @@ public class ListLinks {
         //Iterate through list of companies and domains
         for (CompDom cd : cdList) {
 
-            boolean isArray = cd.isArray(); //check if there is more than one domain in the object
-
             //Check the object contains only 1 domain
-            if (!isArray) {
-                print("Single Domain");
 
                 //initialize variables
                 company = cd.getCompany();
@@ -135,8 +131,6 @@ public class ListLinks {
             }
 
         }
-
-    }
 
     private static void print(String msg, Object... args) {
         System.out.println(String.format(msg, args));
