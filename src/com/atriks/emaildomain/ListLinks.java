@@ -1,15 +1,22 @@
 package com.atriks.emaildomain;
 
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Iterator;
-
-
+import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
+import org.jsoup.UnsupportedMimeTypeException;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
+import javax.net.ssl.SSLException;
+import javax.net.ssl.SSLHandshakeException;
+import java.io.IOException;
+import java.net.ConnectException;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.UUID;
 
 /**
  * Created by Dan Chick
@@ -21,7 +28,7 @@ import org.jsoup.select.Elements;
  * A program that will take a list of companies and domains
  * and check to see if the official website of that company
  * is the listed domain by scraping Wikipedia
- *
+ * <p/>
  * Input: List of companies and domains in a custom CompDom object
  * Output: List of queries to use in SQL Server
  */
@@ -34,17 +41,20 @@ public class ListLinks {
     public static void main(String[] args) throws IOException, SQLException {
 
         //Get list of companies and domains to parse
-        ArrayList<CompDom> cdList = ConnectDB.retrieveCD();
+        //ArrayList<CompDom> cdList = ConnectDB.retrieveCD();
 
-        //Create list to store newly created queries
-        ArrayList<String> queryList = new ArrayList<String>();
+        ArrayList<CompDom> cdList;
+
+        if (args.length == 0) {
+            java.net.InetAddress localMachine = java.net.InetAddress.getLocalHost();
+            cdList = ConnectDBDispatch.retrieveCDDispatch(localMachine.getHostName() + UUID.randomUUID());
+        } else {
+            cdList = ConnectDBDispatch.retrieveCDDispatch(args[0]);
+        }
 
         //Create variables
         String company;
         String domain;
-        String[] domains;
-        String url0;
-        String url1;
         String url;
 
         //Iterate through list of companies and domains
@@ -61,120 +71,64 @@ public class ListLinks {
                 domain = cd.getDomain();
 
                 //create url to scrape from
-                url0 = "http://en.wikipedia.org/w/index.php?search=";
-                url1 = company.replaceAll("[^\\x00-\\x7F]", "");
-                url = url0 + url1;
+                //url0 = "http://en.wikipedia.org/w/index.php?search=";
+                //url1 = company.replaceAll("[^\\x00-\\x7F]","");
+                //url = url0 + url1;
 
-                print("\nCompany: " + company + " Domain: " + domain);
+                url = "https://www.google.com/search?&q=" + company;
 
                 String userAgent = GetUserAgent.getAgent();
 
-                //connect to URL, retrieve HTML source
-                Document doc = Jsoup.connect(url).userAgent(userAgent).timeout(0).get();
-
-                //Create an object to store every link object on the page
-                //selects them by looking for <a href=""></a>
-                Elements links = doc.select("a[href]");
-
-                //Create iterator to iterate through list of links
-                Iterator i$;
-                i$ = links.iterator();
-
-                //Create object to store single link
-                Element link;
-
-                //Iterate through list of links
-                while (i$.hasNext()) {
-
-                    //Store current link in created object
-                    link = (Element) i$.next();
-
-                    //checks if the link text contains the word "website"
-                    if (link.text().contains("website")) {
-
-                        //creates a string to store the URL of the link
-                        String wSite = link.attr("abs:href");
-
-                        //checks if the stored URL matches the domain we're checking for
-                        if (wSite.contains(domain)) {
-                            print("MATCH FOUND FOR " + company + ": " + domain);
-
-                            //create queries
-                            queryList.add("update li_parse..qa_li_company_email_domains set [status] = 1, last_updated = getdate() where company like '" + company + "' and ehost like '" + domain.trim() + "'");
-                            queryList.add("update li_parse..qa_li_company_email_domains set [status] = 0, last_updated = getdate() where company like '" + company + "' and ehost not like '" + domain.trim() + "'");
-                        } else
-                            print("NO MATCH...\n ");
-                    }
-                }
-
-                //sleep to not get rate limited
                 try {
-                    Thread.sleep(500);
-                } catch (InterruptedException ignored) {
+                    print("\nCompany: " + company + " Domain: " + domain);
 
-                }
+                    //connect to URL, retrieve HTML source
+                    Document doc = Jsoup.connect(url).userAgent(userAgent).referrer("https://google.com").timeout(0).get();
 
-            } else {
-                print("Multi Domain");
+                    //Create an object to store every link object on the page
+                    //selects them by looking for <a href=""></a>
+                    Elements links = doc.select("cite._Rm");
 
-                //initialize variables
-                company = cd.getCompany();
-                domains = cd.getDomains();
+                    boolean containsDomain = false;
 
-                //create url to scrape from
-                url0 = "http://en.wikipedia.org/w/index.php?search=";
-                url1 = company.replaceAll("[^\\x00-\\x7F]", "");
-                url = url0 + url1;
-
-
-                String userAgent = GetUserAgent.getAgent();
-
-                //connect to URL, retrieve HTML source
-                Document doc = Jsoup.connect(url).userAgent(userAgent).timeout(0).get();
-
-                //Create an object to store every link object on the page
-                //selects them by looking for <a href=""></a>
-                Elements links = doc.select("a[href]");
-
-
-                //Iterate through list of domains
-                for (int j = 0; j < cd.getNumDomains(); j++) {
-                    print("\nCompany: " + company + " Domain: " + domains[j]);
-
-                    //Create iterator to iterate through list of links
-                    Iterator i$;
-                    i$ = links.iterator();
-
-                    //Create object to store single link
-                    Element link;
-
-                    //Iterate through list of links
-                    while (i$.hasNext()) {
-                        //Store current link in created object
-                        link = (Element) i$.next();
-
-                        //checks if the link text contains the word "website"
-                        if (link.text().contains("website")) {
-
-                            //creates a string to store the URL of the link
-                            String wSite = link.attr("abs:href");
-
-                            if (wSite.contains(domains[j])) {
-                                print("MATCH FOUND FOR " + company + ": " + domains[j]);
-
-                                //create queries
-                                queryList.add("update li_parse..qa_li_company_email_domains set [status] = 1, last_updated = getdate() where company like '" + company + "' and ehost like '" + domains[j].trim() + "'");
-                                queryList.add("update li_parse..qa_li_company_email_domains set [status] = 0, last_updated = getdate() where company like '" + company + "' and ehost not like '" + domains[j].trim() + "'");
-                            } else
-                                print("NO MATCH...\n ");
+                    for (Element link : links) {
+                        String lString = link.toString();
+                        lString = lString.replaceAll("</?[^>]+>", "");
+                        if(lString.contains(domain)) {
+                            print(lString);
+                            containsDomain = true;
                         }
                     }
 
-                }
+                   if(containsDomain) {
+                       print("MATCH FOUND FOR " + company + ": " + domain);
+                       UpdateCompDom.updateCD(domain,company);
+                       MarkComplete.markComplete(company, domain);
+                   } else MarkWrong.markWrong(company,domain);
 
-                //sleep to not get rate limited
+                } catch (HttpStatusException e) {
+                    print(e.getMessage() + " " + e.getUrl() + " | " + e.getStatusCode());
+                } catch (UnknownHostException e) {
+                    print("Unknown Host: " + e.getMessage());
+                } catch (ConnectException e) {
+                    print(e.getMessage());
+                } catch (SSLHandshakeException e) {
+                    print(e.getMessage());
+                } catch (SocketException e) {
+                    print(e.getMessage());
+                } catch (SSLException e) {
+                    print(e.getMessage());
+                } catch (UnsupportedMimeTypeException e) {
+                    print("Cannot open page with mime type " + e.getMimeType());
+                } catch (IllegalArgumentException e) {
+                    print(e.getMessage());
+                } catch (SocketTimeoutException e) {
+                    print(e.getMessage());
+                } catch (IOException e) {
+                    print(e.getMessage());
+                }
                 try {
-                    Thread.sleep(500);
+                    Thread.sleep(15000);
                 } catch (InterruptedException ignored) {
 
                 }
@@ -182,12 +136,6 @@ public class ListLinks {
 
         }
 
-
-        //print list of queries to be thrown into SQL
-        print("\n\nListing matches for last run:\n");
-        for (String aQueryList : queryList) {
-            System.out.println("\n" + aQueryList + "\n");
-        }
     }
 
     private static void print(String msg, Object... args) {
